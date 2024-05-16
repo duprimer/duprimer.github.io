@@ -46,6 +46,10 @@ align-items: center;
    
   }
 
+.precur{
+  text-align: center;
+}
+  
   .forlogin{
     color: black;
     align-content: center;
