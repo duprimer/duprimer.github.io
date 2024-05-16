@@ -52,8 +52,9 @@
             </div>
             <!-- Popup para edição -->
             <div id="editPopup" class="popup"> 
+                
                 <div class="popup-content">
-                    <img class="logoh" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
+                    <img class="logohpop" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
                     <input type="text" class="editpop" id="editCpf" placeholder="Novo CPF">
                     <input type="text" class="editpop" id="editEmail" placeholder="Novo Email">
                     <input type="text" class="editpop" id="editInstituicao" placeholder="Nova instituicao">
@@ -61,8 +62,11 @@
                     <input type="text" class="editpop" id="editSenha" placeholder="Nova Senha">
                     <input type="text" class="editpop" id="editTelefone" placeholder="Novo Telefone">
                     <button onclick="saveChanges()">Salvar</button>
-                    <button onclick="validateChanges()">Validar</button>
-                    <button onclick="cancelEdit()">Cancelar</button>
+                    <button id="cancelButton" onclick="closeEditPopup()">Cancelar</button>
+
+
+
+
                 </div>
             </div>
         </div>
@@ -163,72 +167,11 @@
     window.onload = getAllDataOnce;
 
     // Função para abrir o popup de edição
-    function openEditPopup(cpf, email, instituicao, nome, senha, telefone) {
-        document.getElementById('editCpf').value = cpf;
-        document.getElementById('editEmail').value = email;
-        document.getElementById('editInstituicao').value = instituicao;
-        document.getElementById('editNome').value = nome;
-        document.getElementById('editSenha').value = senha;
-        document.getElementById('editTelefone').value = telefone;
-
-        document.getElementById('editPopup').style.display = 'block';
-    }
-
-    // Função para fechar o popup de edição
-    function closeEditPopup() {
-        document.getElementById('editPopup').style.display = 'none';
-    }
-
-    // Função para salvar as alterações
-function saveChanges() {
-    const novoCpf = document.getElementById('editCpf').value;
-    const novoEmail = document.getElementById('editEmail').value;
-    const novaInstituicao = document.getElementById('editInstituicao').value;
-    const novoNome = document.getElementById('editNome').value;
-    const novaSenha = document.getElementById('editSenha').value;
-    const novoTelefone = document.getElementById('editTelefone').value;
     
-    function getUserId() {
-
-    // Obtenha o ID do usuário atualmente em edição (se houver)
-    const userId = getUserId(); // Implemente essa função para obter o ID do usuário
-
-    if (userId) {
-        // Atualize os dados do usuário existente
-        const usuarioRef = firebase.database().ref('usuarios/' + userId);
-        usuarioRef.update({
-            cpf: novoCpf,
-            email: novoEmail,
-            instituicao: novaInstituicao,
-            nome: novoNome,
-            senha: novaSenha,
-            telefone: novoTelefone
-        })
-        .then(() => {
-            console.log('Alterações salvas com sucesso!');
-            closeEditPopup(); // Feche o popup após salvar as alterações
-        })
-        .catch(error => {
-            console.error('Erro ao salvar as alterações:', error);
-        });
-    } else {
-        console.error('ID do usuário não encontrado.'); // Exiba um erro se o ID do usuário não estiver disponível
-    }
-}
-return document.getElementById('userId').value; // Supondo que você tenha um elemento com o ID 'userId' que contenha o ID do usuário
-}
-
-// Função para validar as alterações (opcional)
-function validateChanges() {
-    // Implemente a lógica de validação aqui, se necessário
-    // Esta função é opcional e pode ser usada para validar as alterações antes de salvá-las
-}
-
-// Função para cancelar a edição e fechar o popup
-function cancelEdit() {
-    closeEditPopup();
-}
 
 
 </script>
+
+<script src="js/abrirpopup.js"></script>
+<script src="js/fecharpopup.js"></script>
 </html>

@@ -47,10 +47,7 @@ align-items: center;
 
   
 
-body {
-margin: 0px;
-100n
-}
+
 
 .logoim{
     display: flex;    
@@ -1068,7 +1065,7 @@ button.btn-submit:hover{
   background-color: #fff; /* Cor de fundo */
   margin: 50px auto; /* Margem interna */
   padding: 20px;
-  width: 80%; /* Largura do conteúdo */
+  width: 40%; /* Largura do conteúdo */
   max-width: 600px; /* Largura máxima */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Sombra */
   border-radius: 5px; /* Borda arredondada */
@@ -1084,9 +1081,11 @@ button.btn-submit:hover{
 
 /* Estilo para os campos de edição */
 .editpop {
-  width: 100%;
+ display: flex;
+  width: 60%;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  margin-left: 130px;
   box-sizing: border-box; /* Considera o padding na largura total */
   font-family: 'Quicksand', sans-serif; /* Fonte para os campos de edição */
   font-size: 16px; /* Tamanho da fonte */
@@ -1097,11 +1096,15 @@ button.btn-submit:hover{
 
 /* Estilo para o botão de salvar */
 .popup-content button {
+  display: inline;
+  margin-left: 10px;
   padding: 10px 20px;
   background-color: #007bff; /* Cor de fundo */
   color: #fff; /* Cor do texto */
   border: none;
   border-radius: 5px;
+  position: relative;
+  left:10px;
   cursor: pointer;
   font-family: 'Quicksand', sans-serif; /* Fonte para o botão */
   font-size: 16px; /* Tamanho da fonte */
@@ -1130,6 +1133,7 @@ button.btn-submit:hover{
 }
 
 .edit-button {
+  display: inline;
   background-color: #007bff; /* Cor de fundo azul */
   color: #fff; /* Cor do texto branca */
   border: none; /* Sem borda */
@@ -1173,4 +1177,9 @@ table {
   border-radius: 9px;
 }
 
-
+.logohpop{
+  margin-top: 5px;
+  margin-left: 30px;
+  width: 200px;
+  height: 190px;
+}
