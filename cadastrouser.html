@@ -57,7 +57,7 @@
 
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
+
         import { getDatabase, ref, set, get, child, update, remove } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
         const firebaseConfig = {
@@ -105,52 +105,7 @@
             });
         }
 
-        function BuscarDados(){
-            const dbRef = ref(db);
-            get(child(dbRef, "usuarios/" + cpfInput.value)).then((snapshot)=>{
-                if(snapshot.exists()){
-                    emailInput.value = snapshot.val().email;
-                    senhaInput.value = snapshot.val().senha;
-                    cidadeInput.value = snapshot.val().cidade;
-                    nomeInput.value = snapshot.val().nome;
-                    instituicaoInput.value = snapshot.val().instituicao;
-                    
-                }
-                else{
-                    alert("Nenhum dado encontrado");
-                }
-            })
-            .catch((error)=>{
-                alert("Falha ao buscar dados: " + error);
-            })
-        }
-
-        function AtualizarDados(){
-            update(ref(db, "usuarios/" + cpfInput.value),{
-                email: emailInput.value,
-                senha: senhaInput.value,
-                cidade: cidadeInput.value,
-                nome: nomeInput.value,
-                instituicao: instituicaoInput.value,
-               
-            })
-            .then(()=>{
-                alert("Dados atualizados com sucesso");
-            })
-            .catch((error)=>{
-                alert("Falha ao atualizar dados: " + error);
-            });
-        }
-
-        function ExcluirDados(){
-            remove(ref(db, "usuarios/" + cpfInput.value))
-            .then(()=>{
-                alert("Dados excluídos com sucesso");
-            })
-            .catch((error)=>{
-                alert("Falha ao excluir dados: " + error);
-            });
-        }
+        
 
         addBtn.addEventListener('click', AdicionarDados);
         busBtn.addEventListener('click', BuscarDados);
