@@ -37,24 +37,22 @@
 
     <div class="grid-item2">
         <h1 class="arger">Formulário de Cadastro de Usuário</h1> <!-- Correção: A tag <h1> foi corrigida -->
-        <div class="boxtabcads">
+        
             <div class="dalog">
                 <div class="cabec">Dados de Login</div>
                 <input class="boxcads" name="nome"        id="casnome" type="text" placeholder="Nome">
                 <input class="boxcads" name="cpf"         id="cascpf" type="number" placeholder="CPF">
                 <input class="boxcads" name="email"       id="casemail" type="email" placeholder="Email">
                 <input class="boxcads" name="senha"       id="cassenha" type="text" placeholder="Senha">
-                <input class="boxcads" name="telefone"    id="castelefone" type="text" placeholder="Telefone">
+                <input class="boxcads" name="cicad"       id="cascicad" type="text" placeholder="cidade">
                 <input class="boxcads" name="instituicao" id="casinsti" type="text" placeholder="Instituição">
              </div>
              <br>
              <div class="divbtncad">
                 <button class="btncad" id="InstBtn">Adicionar</button>
-                <button class="btncad" id="SelBtn">Buscar</button>
-                <button class="btncad" id="UpdBtn">Atualizar</button>
-                <button class="btncad" id="DelBtn">Excluir</button></div>
-            
-        </div>
+                
+            </div>
+        
     </div>
 
 <script type="module">
@@ -81,7 +79,7 @@
         var nomeInput = document.getElementById("casnome");
         var emailInput = document.getElementById("casemail");
         var senhaInput = document.getElementById("cassenha");
-        var telefoneInput = document.getElementById("castelefone");
+        var cidadeInput = document.getElementById("cascicad");
         var instituicaoInput = document.getElementById("casinsti"); // Correção: Corrigido o nome da variável instituiçãoInput
 
         var addBtn = document.getElementById("InstBtn");
@@ -94,7 +92,7 @@
                 cpf: cpfInput.value,
                 email: emailInput.value,
                 senha: senhaInput.value,
-                telefone: telefoneInput.value,
+                cidade: cidadeInput.value,
                 nome: nomeInput.value,
                 instituicao: instituicaoInput.value,
                 
@@ -113,7 +111,7 @@
                 if(snapshot.exists()){
                     emailInput.value = snapshot.val().email;
                     senhaInput.value = snapshot.val().senha;
-                    telefoneInput.value = snapshot.val().telefone;
+                    cidadeInput.value = snapshot.val().cidade;
                     nomeInput.value = snapshot.val().nome;
                     instituicaoInput.value = snapshot.val().instituicao;
                     
@@ -131,7 +129,7 @@
             update(ref(db, "usuarios/" + cpfInput.value),{
                 email: emailInput.value,
                 senha: senhaInput.value,
-                telefone: telefoneInput.value,
+                cidade: cidadeInput.value,
                 nome: nomeInput.value,
                 instituicao: instituicaoInput.value,
                
