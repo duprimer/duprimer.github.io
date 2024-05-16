@@ -29,6 +29,7 @@ align-items: center;
 
 }
 .boxlogin {
+  margin-left: 25px;
   width: 400px;
   height: 943px;
   background: none ;
@@ -49,6 +50,7 @@ align-items: center;
     color: black;
     align-content: center;
     align-items: center;
+    
     justify-content: center;
     display: flex;
     flex-direction: column;
@@ -95,12 +97,12 @@ margin: 0px;
     display: flex;    
     justify-content: center;
     align-items: center;
-    margin-left: 1px;
+    margin-left: 25px;
     height: 250px;
 }
 
 h1{
-    font-size: 48px;
+   
     color: #672a91;
     padding: 2px 0 10px 0;
     font-family: Arial,sans-serif;
@@ -1172,4 +1174,11 @@ tr:hover {
 .editpop{
   height: 45px;
   width: 100px;
+}
+
+p{
+  font-size: 15px;
+  font-weight: bold;
+  color: black;
+  font-family:  "Archivo", sans-serif ;
 }

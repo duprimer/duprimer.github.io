@@ -61,7 +61,7 @@ appId: "1:677710403853:web:f67284b068399eebb97844"
                 <p>
                     <input class="btnlogin" type="submit" name="submit" value="Login">
                 </p>
-                <a href="recup-password.html" class="recuperar_senha">Esqueceu a senha?</a>
+                <a href="#" class="recuperar_senha">Esqueceu a senha?</a>
             </form>
         </div>
     </div>    
