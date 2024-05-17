@@ -81,10 +81,7 @@
         
 
         var addBtn = document.getElementById("InstBtn");
-        var busBtn = document.getElementById("SelBtn");
-        var upBtn = document.getElementById("UpdBtn");
-        var delBtn = document.getElementById("DelBtn");
-
+        
         function AdicionarDados(){
             set(ref(db, "horarios/" + HorariosInput.value),{
                 Horarios: HorariosInput.value,
@@ -102,52 +99,7 @@
             });
         }
 
-        function BuscarDados(){
-            const dbRef = ref(db);
-            get(child(dbRef, "Horarios/" + HorariosInput.value)).then((snapshot)=>{
-                if(snapshot.exists()){
-                    HorariosInput.value = snapshot.val().Horarios;
-                    VeiculosInput.value = snapshot.val().Veiculos;
-                    SaidasInput.value = snapshot.val().Saidas;
-                    DestinosInput.value = snapshot.val().Destinos;
-                    
-                    
-                }
-                else{
-                    alert("Nenhum dado encontrado");
-                }
-            })
-            .catch((error)=>{
-                alert("Falha ao buscar dados: " + error);
-            })
-        }
-
-        function AtualizarDados(){
-            update(ref(db, "Horarios/" + HorariosInput.value),{
-                Horarios: HorariosInput.value,
-                Veiculos: VeiculosInput.value,
-                Saidas: SaidasInput.value,
-                Destinos: DestinosInput.value,
-               
-               
-            })
-            .then(()=>{
-                alert("Dados atualizados com sucesso");
-            })
-            .catch((error)=>{
-                alert("Falha ao atualizar dados: " + error);
-            });
-        }
-
-        function ExcluirDados(){
-            remove(ref(db, "Horarios/" + HorariosInput.value))
-            .then(()=>{
-                alert("Dados excluídos com sucesso");
-            })
-            .catch((error)=>{
-                alert("Falha ao excluir dados: " + error);
-            });
-        }
+      
 
         addBtn.addEventListener('click', AdicionarDados);
         busBtn.addEventListener('click', BuscarDados);
