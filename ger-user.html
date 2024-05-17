@@ -8,13 +8,9 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
-    <!-- Seu script JavaScript -->
-
 </head>
 <body>
     <div class="grid-container">
@@ -34,180 +30,195 @@
             </nav>            
         </div>
         <div class="grid-item2">
-            <h1 class="arger">  Area de Gerenciamento de Usuários</h1>
+            <h1 class="arger">  Area de Gerenciamento de usuarios</h1>
             <div class="boxtab">
-                <div class="cabetab"> 
-                    
+                <div class="cabetab">
+                 
+                    <p class="pcabe"> <input type="text" name="pesquisa_por_aluno" id="pesid" placeholder="pesquisa por aluno"> </p>        
+           <button  id="btnpes" ><i class="fas fa-search"></i> pesquisa </button>
+           <p class="pcabe"> <input type="text" name="pesquisa_por_aluno" id="pesid" placeholder="pesquisa por aluno"> </p> 
+           <button  id="btnpes" ><i class="fas fa-search"></i> pesquisa </button>
+        
+
                 </div>
-                
                 <table id="tab12" class="table table-dark">
                     <thead>
-                        <th>Son</th>
-                        <th>CPF</th>
-                        <th>Email</th>
-                        <th>Instituição</th>
-                        <th>Nome</th>
-                        <th>Senha</th>
-                        <th>cidade cadastrada</th>
-                        <th>editar</th>
-                                            </thead>
+                        <tr>
+                            <th>Son</th>
+                            <th>CPF</th>
+                            <th>Email</th>
+                            <th>Instituição</th>
+                            <th>Nome</th>
+                            <th>Senha</th>
+                            <th>Cidade Cadastrada</th>
+                            <th>Editar</th>
+                        </tr>
+                    </thead>
                     <tbody id="tbody1"></tbody>
                 </table>
-                
                 <button class="btnfun"><i class="fa-solid fa-plus"></i> <a class="a2" href="cadastrouser.html">Adicionar</a></button>
             </div>
             <!-- Popup para edição -->
-            <div id="editPopup" class="popup"> 
-                
+            <div id="editPopup" class="popup">
                 <div class="popup-content">
                     <img class="logohpop" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
+                    <input type="hidden" id="editKey">
                     <input type="text" class="editpop" id="editCpf" placeholder="Novo CPF">
                     <input type="text" class="editpop" id="editEmail" placeholder="Novo Email">
-                    <input type="text" class="editpop" id="editInstituicao" placeholder="Nova instituicao">
+                    <input type="text" class="editpop" id="editInstituicao" placeholder="Nova Instituição">
                     <input type="text" class="editpop" id="editNome" placeholder="Novo Nome">
                     <input type="text" class="editpop" id="editSenha" placeholder="Nova Senha">
                     <input type="text" class="editpop" id="editTelefone" placeholder="Novo Telefone">
-                    <button  id="saveButton"onclick="saveChanges()">Salvar</button>
+                    <button id="saveButton" onclick="saveChanges()">Salvar</button>
                     <button id="cancelButton" onclick="closeEditPopup()">Cancelar</button>
-
-
-
-
                 </div>
             </div>
         </div>
     </div>
 </body>
 <script type="module">
+    const firebaseConfig = {
+        apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
+        authDomain: "glor-ae49f.firebaseapp.com",
+        databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
+        projectId: "glor-ae49f",
+        storageBucket: "glor-ae49f.appspot.com",
+        messagingSenderId: "677710403853",
+        appId: "1:677710403853:web:f67284b068399eebb97844"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function getAllDataOnce() {
+        db.ref("usuarios").once("value")
+            .then(snapshot => {
+                const users = [];
+                snapshot.forEach(childSnapshot => {
+                    const user = childSnapshot.val();
+                    user.key = childSnapshot.key;
+                    users.push(user);
+                });
+                addAllItemsToTable(users);
+            })
+            .catch(error => {
+                console.error("Erro ao obter os dados: ", error);
+            });
+    }
+
+    // Função para salvar as alterações
+    function saveChanges() {
+        const key = document.getElementById('editKey').value;
+        const user = {
+            cpf: document.getElementById('editCpf').value,
+            email: document.getElementById('editEmail').value,
+            instituicao: document.getElementById('editInstituicao').value,
+            nome: document.getElementById('editNome').value,
+            senha: document.getElementById('editSenha').value,
+            telefone: document.getElementById('editTelefone').value
+        };
+        db.ref("usuarios/" + key).update(user)
+            .then(() => {
+                console.log("Usuário atualizado com sucesso.");
+                closeEditPopup();
+                getAllDataOnce();
+            })
+            .catch(error => {
+                console.error("Erro ao atualizar o usuário:", error.message);
+            });
+    }
+
+    let stdNo = 0;
+    const tbody = document.getElementById('tbody1');
+
+    function addItemToTable({ key, cpf, email, instituicao, nome, senha, telefone }) {
+        if (!email) {
+            console.error("Email não está definido.");
+            return;
+        }
+
+        const row = document.createElement("tr");
+
+        const cellContents = [++stdNo, cpf, email, instituicao, nome, senha, telefone];
+        cellContents.forEach(content => {
+            const cell = document.createElement("td");
+            cell.textContent = content || "";
+            row.appendChild(cell);
+        });
+
+        const actionsCell = document.createElement("td");
+
+        const deleteButton = createButton("Excluir", "delete-button", () => deleteUser(key));
+        const editButton = createButton("Alterar", "edit-button", () => openEditPopup({ key, cpf, email, instituicao, nome, senha, telefone }));
+        const validateButton = createButton("Validar", "validar-button", () => validateUser(email, senha));
+
+        [deleteButton, editButton, validateButton].forEach(button => actionsCell.appendChild(button));
+
+        row.appendChild(actionsCell);
+        tbody.appendChild(row);
+    }
+
+    function addAllItemsToTable(users) {
+        stdNo = 0;
+        tbody.innerHTML = "";
+        users.forEach(user => addItemToTable(user));
+    }
+
+    function createButton(label, className, onClick) {
+        const button = document.createElement("button");
+        button.className = className;
+        button.textContent = label;
+        button.onclick = onClick;
+        return button;
+    }
+
+    function openEditPopup(user) {
+        document.getElementById('editKey').value = user.key || "";
+        document.getElementById('editCpf').value = user.cpf || "";
+        document.getElementById('editEmail').value = user.email || "";
+        document.getElementById('editInstituicao').value = user.instituicao || "";
+        document.getElementById('editNome').value = user.nome || "";
+        document.getElementById('editSenha').value = user.senha || "";
+        document.getElementById('editTelefone').value = user.telefone || "";
+        document.getElementById('editPopup').style.display = 'block';
+    }
+
+    function closeEditPopup() {
+        document.getElementById('editPopup').style.display = 'none';
+    }
+
     
 
+    function deleteUser(key) {
+        db.ref("usuarios/" + key).
+        remove()
+            .then(() => {
+                console.log("Usuário removido com sucesso.");
+                getAllDataOnce();
+            })
+            .catch(error => {
+                console.error("Erro ao remover usuário:", error.message);
+            });
+    }
 
-    var stdNo = 0;
-var tbody = document.getElementById('tbody1');
+    function validateUser(email, senha) {
+        firebase.auth().signInWithEmailAndPassword(email, senha)
+            .then(userCredential => {
+                const user = userCredential.user;
+                console.log("Usuário autenticado:", user.uid);
+            })
+            .catch(error => {
+                console.error("Erro ao autenticar o usuário:", error.message);
+            });
+    }
 
-// Inicializar o aplicativo Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-  authDomain: "glor-ae49f.firebaseapp.com",
-  databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-  projectId: "glor-ae49f",
-  storageBucket: "glor-ae49f.appspot.com",
-  messagingSenderId: "677710403853",
-  appId: "1:677710403853:web:f67284b068399eebb97844"
-};
-
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-function AddItemToTable(cpf, email, instituicao, nome, senha, telefone) {
-  // Se o email não estiver definido, não prosseguir com a adição ao tabela
-  if (!email) {
-    console.error("Email não está definido.");
-    return;
-  }
-
-  let trow = document.createElement("tr");
-  let td1 = document.createElement("td");
-  let td2 = document.createElement("td");
-  let td3 = document.createElement("td");
-  let td4 = document.createElement("td");
-  let td5 = document.createElement("td");
-  let td6 = document.createElement("td");
-  let td7 = document.createElement("td");
-  let td8 = document.createElement("td"); // Nova célula para os botões
-
-  td1.innerHTML = ++stdNo;
-  td2.innerHTML = cpf || "";   
-  td3.innerHTML = email || "";
-  td4.innerHTML = instituicao || "";
-  td5.innerHTML = nome || "";
-  td6.innerHTML = senha || "";
-  td7.innerHTML = telefone || "";
-  
-  // Botão de Excluir
-  let deleteButton = document.createElement("button");
-  deleteButton.textContent = "Excluir";
-  deleteButton.classList.add("delete-button");
-  deleteButton.addEventListener("click", function() {
-      // Adicione aqui a lógica para excluir o usuário
-      // Você pode usar o ID do usuário ou outras informações para identificar o usuário a ser excluído
-  });
-
-  // Botão de Alterar
-  let editButton = document.createElement("button");
-  editButton.textContent = "Alterar";
-  editButton.classList.add("edit-button");
-  editButton.addEventListener("click", function() {
-      openEditPopup(cpf, email, instituicao, nome, senha, telefone); // Chamada da função para abrir o popup de edição
-  });
-
-  // Botão de Validar
-  let validarButton = document.createElement("button");
-  validarButton.textContent = "Validar";
-  validarButton.classList.add("validar-button");
-  validarButton.addEventListener("click", function() {
-      // Validar o usuário com email e senha
-      firebase.auth().signInWithEmailAndPassword(email, senha)
-      .then((userCredential) => {
-          // Usuário autenticado com sucesso
-          let user = userCredential.user;
-          console.log("Usuário autenticado:", user.uid);
-          // Você pode fazer algo aqui, como exibir uma mensagem de sucesso
-      })
-      .catch((error) => {
-          // Caso ocorra um erro ao autenticar o usuário
-          let errorCode = error.code;
-          let errorMessage = error.message;
-          console.error("Erro ao autenticar o usuário:", errorMessage);
-          // Você pode exibir uma mensagem de erro para o usuário ou tomar outra ação adequada
-      });
-  });
-
-  td8.appendChild(deleteButton);
-  td8.appendChild(editButton);
-  td8.appendChild(validarButton); // Adicionando o botão "Validar" na última célula
-
-  trow.appendChild(td1);
-  trow.appendChild(td2);
-  trow.appendChild(td3);
-  trow.appendChild(td4);
-  trow.appendChild(td5);
-  trow.appendChild(td6);
-  trow.appendChild(td7);
-  trow.appendChild(td8); // Adicionando a nova célula com os botões
-  
-  tbody.appendChild(trow);
-}
-
-function AddAllItensToTabe(usuarios) {
-  stdNo = 0;
-  tbody.innerHTML = "";
-  usuarios.forEach(element => {
-      AddItemToTable(element.cpf, element.email, element.instituicao, element.nome, element.senha, element.telefone);
-  });
-}
-
-function getAllDataOnce() {
-  const dbRef = db.ref("usuarios");
-
-  dbRef.once("value").then((snapshot) => {
-      var users = [];
-      snapshot.forEach((childSnapshot) => {
-          users.push(childSnapshot.val());
-      });
-      AddAllItensToTabe(users);
-  }).catch((error) => {
-      console.error("Erro ao obter os dados: ", error);
-  });
-}
-
-window.onload = getAllDataOnce;
-
-
-
+    window.onload = getAllDataOnce;
 </script>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+
+<script src="js/salvar.js"></script>
 <script src="js/abrirpopup.js"></script>
-  <script src="js/salvar.js"></script>
 
 </html>
