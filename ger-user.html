@@ -90,6 +90,45 @@
 
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+
+    function getAllDataOnce() {
+        db.ref("usuarios").once("value")
+            .then(snapshot => {
+                const users = [];
+                snapshot.forEach(childSnapshot => {
+                    const user = childSnapshot.val();
+                    user.key = childSnapshot.key;
+                    users.push(user);
+                });
+                addAllItemsToTable(users);
+            })
+            .catch(error => {
+                console.error("Erro ao obter os dados: ", error);
+            });
+    }
+
+    // Função para salvar as alterações
+    function saveChanges() {
+        const key = document.getElementById('editKey').value;
+        const user = {
+            cpf: document.getElementById('editCpf').value,
+            email: document.getElementById('editEmail').value,
+            instituicao: document.getElementById('editInstituicao').value,
+            nome: document.getElementById('editNome').value,
+            senha: document.getElementById('editSenha').value,
+            telefone: document.getElementById('editTelefone').value
+        };
+        db.ref("usuarios/" + key).update(user)
+            .then(() => {
+                console.log("Usuário atualizado com sucesso.");
+                closeEditPopup();
+                getAllDataOnce();
+            })
+            .catch(error => {
+                console.error("Erro ao atualizar o usuário:", error.message);
+            });
+    }
+
     let stdNo = 0;
     const tbody = document.getElementById('tbody1');
 
@@ -124,22 +163,6 @@
         stdNo = 0;
         tbody.innerHTML = "";
         users.forEach(user => addItemToTable(user));
-    }
-
-    function getAllDataOnce() {
-        db.ref("usuarios").once("value")
-            .then(snapshot => {
-                const users = [];
-                snapshot.forEach(childSnapshot => {
-                    const user = childSnapshot.val();
-                    user.key = childSnapshot.key;
-                    users.push(user);
-                });
-                addAllItemsToTable(users);
-            })
-            .catch(error => {
-                console.error("Erro ao obter os dados: ", error);
-            });
     }
 
     function createButton(label, className, onClick) {
@@ -192,6 +215,11 @@
 
     window.onload = getAllDataOnce;
 </script>
-<script src="js/abrirpopup.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+
 <script src="js/salvar.js"></script>
+<script src="js/abrirpopup.js"></script>
+
 </html>

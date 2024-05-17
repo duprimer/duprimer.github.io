@@ -1,16 +1,16 @@
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-    authDomain: "glor-ae49f.firebaseapp.com",
-    databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-    projectId: "glor-ae49f",
-    storageBucket: "glor-ae49f.appspot.com",
-    messagingSenderId: "677710403853",
-    appId: "1:677710403853:web:f67284b068399eebb97844"
-};
+        apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
+        authDomain: "glor-ae49f.firebaseapp.com",
+        databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
+        projectId: "glor-ae49f",
+        storageBucket: "glor-ae49f.appspot.com",
+        messagingSenderId: "677710403853",
+        appId: "1:677710403853:web:f67284b068399eebb97844"
+    };
 
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
 
 function saveChanges() {
