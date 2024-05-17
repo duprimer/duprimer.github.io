@@ -1,35 +1,35 @@
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
+    authDomain: "glor-ae49f.firebaseapp.com",
+    databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
+    projectId: "glor-ae49f",
+    storageBucket: "glor-ae49f.appspot.com",
+    messagingSenderId: "677710403853",
+    appId: "1:677710403853:web:f67284b068399eebb97844"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+
 function saveChanges() {
-    const novoCpf = document.getElementById('editCpf').value;
-    const novoEmail = document.getElementById('editEmail').value;
-    const novaInstituicao = document.getElementById('editInstituicao').value;
-    const novoNome = document.getElementById('editNome').value;
-    const novaSenha = document.getElementById('editSenha').value;
-    const novaCidade = document.getElementById('editCidade').value;
-
-    // Obtendo o ID do usuário atualmente em edição
-    const userId = getUserId();
-
-    // Verificando se o ID do usuário está disponível
-    if (userId) {
-        // Atualizando os dados do usuário existente no Firebase
-        const usuarioRef = firebase.database().ref('usuarios/' + userId);
-        usuarioRef.update({
-            cpf: novoCpf,
-            email: novoEmail,
-            instituicao: novaInstituicao,
-            nome: novoNome,
-            senha: novaSenha,
-            cidade: novaCidade
-        })
+    const key = document.getElementById('editKey').value;
+    const user = {
+        cpf: document.getElementById('editCpf').value,
+        email: document.getElementById('editEmail').value,
+        instituicao: document.getElementById('editInstituicao').value,
+        nome: document.getElementById('editNome').value,
+        senha: document.getElementById('editSenha').value,
+        telefone: document.getElementById('editTelefone').value
+    };
+    db.ref("usuarios/" + key).update(user)
         .then(() => {
-            console.log('Alterações salvas com sucesso!');
-            closeEditPopup(); // Fechando o popup após salvar as alterações
+            console.log("Usuário atualizado com sucesso.");
+            closeEditPopup();
+            getAllDataOnce();
         })
         .catch(error => {
-            console.error('Erro ao salvar as alterações:', error);
+            console.error("Erro ao atualizar o usuário:", error.message);
         });
-    } else {
-        console.error('ID do usuário não encontrado.'); // Exibindo um erro se o ID do usuário não estiver disponível
-    }
 }
-

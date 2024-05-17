@@ -490,11 +490,27 @@ a{
   font-family: "Archivo", sans-serif;
   font-size: 14px;
   
+ 
   background-color: #ffffff;
   height: 75px;
   width: 1426px;
   border: 2px blueviolet solid;
   border-radius: 12px;
+}
+
+#btnPesq{
+
+  position: relative;
+  top: 0;
+  left: 35px;
+  height: 35px;
+  width: 150px;
+}
+
+#editpesquisa{
+position: relative;
+top: 15px;
+width: 250px;
 }
 
 .pcabe{
