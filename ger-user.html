@@ -294,25 +294,7 @@
 
     window.onload = getAllDataOnce;
 
-    // Função para gerar o PDF
-    function generatePDF() {
-        const doc = new jsPDF();
-        const table = document.getElementById('tab12');
-        const headers = Array.from(table.querySelectorAll('th')).map(header => header.textContent.trim());
-        const selectedRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => {
-            const checkbox = row.querySelector('input[type="checkbox"]');
-            return checkbox.checked;
-        }).map(row => Array.from(row.querySelectorAll('td')).map(cell => cell.textContent.trim()));
-
-        doc.text("Dados da Tabela", 10, 10);
-        doc.autoTable({
-            startY: 20,
-            head: [headers],
-            body: selectedRows
-        });
-
-        doc.save('tabela.pdf');
-    }
+    
 
     
 </script>
@@ -333,6 +315,33 @@
         // Atualiza o texto do botão "Selecionar Todos"
         selectAllButton.textContent = uncheckedBoxesExist ? "Desmarcar Todos" : "Selecionar Todos";
     }
+    function generatePDF() {
+    var doc = new jsPDF();
+    var table = document.getElementById('tab12');
+    var headers = Array.from(table.querySelectorAll('th')).map(header => header.textContent.trim());
+    var selectedRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => {
+        var checkbox = row.querySelector('input[type="checkbox"]');
+        return checkbox.checked;
+    }).map(row => Array.from(row.querySelectorAll('td')).map(cell => cell.textContent.trim()));
+
+    // Definir a posição inicial do texto
+    var y = 10;
+
+    // Adicionar título
+    doc.text("Dados da Tabela", 10, y);
+    y += 10;
+
+    // Adicionar cabeçalho da tabela
+    var colWidths = headers.map(header => doc.getStringUnitWidth(header) * 5); // Definir a largura das colunas
+    doc.autoTable({
+        startY: y,
+        head: [headers],
+        body: selectedRows,
+        columnStyles: { 0: { columnWidth: colWidths[0] }, 1: { columnWidth: colWidths[1] }, ... } // Definir largura das colunas
+    });
+
+    doc.save('tabela.pdf');
+}
 
 </script>
 
