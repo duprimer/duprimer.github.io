@@ -49,7 +49,7 @@
                     </p>
                 </div>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+                <div class="scrollable-table-container">
                 <table id="tab12" class="table table-dark">
                     <thead>
                         <tr>
@@ -66,6 +66,7 @@
                     </thead>
                     <tbody id="tbody1"></tbody>
                 </table>
+            </div>
                 <button class="btnfun"><i class="fa-solid fa-plus"></i> <a class="a2" href="cadastrouser.html">Adicionar</a></button>
             </div>
             <!-- Popup para edição -->
@@ -315,33 +316,7 @@
         // Atualiza o texto do botão "Selecionar Todos"
         selectAllButton.textContent = uncheckedBoxesExist ? "Desmarcar Todos" : "Selecionar Todos";
     }
-    function generatePDF() {
-    var doc = new jsPDF();
-    var table = document.getElementById('tab12');
-    var headers = Array.from(table.querySelectorAll('th')).map(header => header.textContent.trim());
-    var selectedRows = Array.from(table.querySelectorAll('tbody tr')).filter(row => {
-        var checkbox = row.querySelector('input[type="checkbox"]');
-        return checkbox.checked;
-    }).map(row => Array.from(row.querySelectorAll('td')).map(cell => cell.textContent.trim()));
-
-    // Definir a posição inicial do texto
-    var y = 10;
-
-    // Adicionar título
-    doc.text("Dados da Tabela", 10, y);
-    y += 10;
-
-    // Adicionar cabeçalho da tabela
-    var colWidths = headers.map(header => doc.getStringUnitWidth(header) * 5); // Definir a largura das colunas
-    doc.autoTable({
-        startY: y,
-        head: [headers],
-        body: selectedRows,
-        columnStyles: { 0: { columnWidth: colWidths[0] }, 1: { columnWidth: colWidths[1] }, ... } // Definir largura das colunas
-    });
-
-    doc.save('tabela.pdf');
-}
+    
 
 </script>
 
