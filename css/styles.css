@@ -987,6 +987,8 @@ button.btn-submit:hover{
   max-width: 600px; /* Largura máxima */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Sombra */
   border-radius: 5px; /* Borda arredondada */
+  justify-content: center;
+  align-items: center;
 }
 
 /* Botão para fechar o popup */
@@ -995,6 +997,14 @@ button.btn-submit:hover{
   top: 10px;
   right: 10px;
   cursor: pointer;
+}
+
+.imgpop{
+  align-items: center;
+  margin-top: 5px;
+  margin-left: 200px;
+  width: 200px;
+  height: 190px;
 }
 
 /* Estilo para os campos de edição */
@@ -1018,11 +1028,11 @@ button.btn-submit:hover{
   margin-left: 10px;
   padding: 10px 20px;
   background-color: #007bff; /* Cor de fundo */
-  color: #fff; /* Cor do texto */
+  color: #ffffff; /* Cor do texto */
   border: none;
   border-radius: 5px;
   position: relative;
-  left:10px;
+  left:200px;
   cursor: pointer;
   font-family: 'Quicksand', sans-serif; /* Fonte para o botão */
   font-size: 16px; /* Tamanho da fonte */
