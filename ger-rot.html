@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+< lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -57,7 +57,7 @@
             <!-- Popup para edição -->
             <div id="editPopup" class="popup"> 
                 <div class="popup-content">
-                    <img class="logoh" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
+                    <img class="imgpop" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
                     <input type="text" class="editpop" id="editHorarios" placeholder="Novo Horário">
                     <input type="text" class="editpop" id="editVeiculos" placeholder="Novo Veículo">
                     <input type="text" class="editpop" id="editSaidas" placeholder="Nova Saída">
@@ -69,7 +69,7 @@
             </div>
         </div>
     </div>
-</body>
+
 <script type="module">
     var stdNo = 0;
     var tbody = document.getElementById('tbody1');
@@ -117,6 +117,33 @@
         trow.appendChild(td8); // Adicionando a nova célula com os botões
 
         tbody.appendChild(trow);
+    }
+
+    function saveChanges() {
+        // Obter os novos valores dos campos de edição
+        const novoHorarios = document.getElementById('editHorarios').value;
+        const novoVeiculos = document.getElementById('editVeiculos').value;
+        const novaSaidas = document.getElementById('editSaidas').value;
+        const novoDestinos = document.getElementById('editDestinos').value;
+
+        // Atualizar os dados no Firebase com os novos valores
+        // Por exemplo, se `idDoItem` é o identificador único do item a ser atualizado:
+        const idDoItem = "idDoItem"; // Defina o ID do item que está sendo editado
+        const itemRef = ref(db, "rota" + idDoItem);
+        update(itemRef, {
+            Horarios: novoHorarios,
+            Veiculos: novoVeiculos,
+            Saidas: novaSaidas,
+            Destinos: novoDestinos
+        }).then(() => {
+            // Sucesso ao atualizar os dados
+            console.log("Dados atualizados com sucesso!");
+            // Feche o popup de edição
+            
+        }).catch((error) => {
+            // Erro ao atualizar os dados
+            console.error("Erro ao atualizar os dados: ", error);
+        });
     }
 
     function AddAllItensToTable(rotas) {
@@ -170,35 +197,13 @@
    
 
     // Função para salvar as alterações
-    function saveChanges() {
-        // Obter os novos valores dos campos de edição
-        const novoHorarios = document.getElementById('editHorarios').value;
-        const novoVeiculos = document.getElementById('editVeiculos').value;
-        const novaSaidas = document.getElementById('editSaidas').value;
-        const novoDestinos = document.getElementById('editDestinos').value;
-
-        // Atualizar os dados no Firebase com os novos valores
-        // Por exemplo, se `idDoItem` é o identificador único do item a ser atualizado:
-        const idDoItem = "idDoItem"; // Defina o ID do item que está sendo editado
-        const itemRef = ref(db, "caminho/do/item/" + idDoItem);
-        update(itemRef, {
-            Horarios: novoHorarios,
-            Veiculos: novoVeiculos,
-            Saidas: novaSaidas,
-            Destinos: novoDestinos
-        }).then(() => {
-            // Sucesso ao atualizar os dados
-            console.log("Dados atualizados com sucesso!");
-            // Feche o popup de edição
-            
-        }).catch((error) => {
-            // Erro ao atualizar os dados
-            console.error("Erro ao atualizar os dados: ", error);
-        });
-    }
+    
 
     function closeEditPopup() {
         document.getElementById('editPopup').style.display = 'none';
     }
 </script>
+<script src="js/abrirpopup.js"></script>
+
+</body>
 </html>
