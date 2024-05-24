@@ -373,6 +373,8 @@ a{
 }
 
 
+
+
 .divtable{
   font-family: "Archivo", sans-serif;
   font-size: 14px;
@@ -748,13 +750,17 @@ body {
 }
 
 .dalog{
-  margin-top: 0.1px;
+ 
   
   background-color: white;
   border: #474647 solid 1px;
   border-radius: 12px;
   height: 250px;
   width: 1430px;
+  margin-top: 0.1px; 
+  margin-left: 35px;
+
+  
 }
 
 .boxcads{
