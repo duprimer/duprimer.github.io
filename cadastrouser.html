@@ -21,37 +21,37 @@
         </div>
 
         <nav class="menu">    
-            <ul> <!-- Correção: Adicionado elemento <ul> -->
-                    <li class="btnmenu"><a  class="a2" href="ger-hor.html">HORÁRIOS</a></li>
-                    <li class="btnmenu"><a  class="a2"  href="ger-user.html">USUÁRIOS</a></li>
-                    <li class="btnmenu"><a  class="a2"  href="ger-rot.html">ROTAS</a></li>              
-                    <li class="btnmenu"><a  class="a2"  href="index.html">SAIR</a></li>
-            </ul> <!-- Correção: Fechamento do elemento <ul> -->
+            <ul>
+                <li class="btnmenu"><a class="a2" href="ger-hor.html">HORÁRIOS</a></li>
+                <li class="btnmenu"><a class="a2" href="ger-user.html">USUÁRIOS</a></li>
+                <li class="btnmenu"><a class="a2" href="ger-rot.html">ROTAS</a></li>              
+                <li class="btnmenu"><a class="a2" href="index.html">SAIR</a></li>
+            </ul>
         </nav>    
     </div>
 
     <div class="grid-item2">
-        <h1 class="arger">Formulário de Cadastro de Usuário</h1> <!-- Correção: A tag <h1> foi corrigida -->
-        
-            <div class="dalog">
-                <div class="cabec">Dados de Login</div>
-                <input class="boxcads" name="nome"        id="casnome" type="text" placeholder="Nome">
-                <input class="boxcads" name="cpf"         id="cascpf" type="number" placeholder="CPF">
-                <input class="boxcads" name="email"       id="casemail" type="email" placeholder="Email">
-                <input class="boxcads" name="senha"       id="cassenha" type="password" placeholder="Senha">
-                <input class="boxcads" name="cicad"       id="cascicad" type="text" placeholder="Cidade">
-                <input class="boxcads" name="instituicao" id="casinsti" type="text" placeholder="Instituição">
-             </div>
-             <br>
-             <div class="divbtncad">
-                <button class="btncad" id="InstBtn">Adicionar</button>
-            </div>
-        
+        <h1 class="arger">Formulário de Cadastro de Usuário</h1>
+        <div class="dalog">
+            <div class="cabec">Dados de Login</div>
+            <input class="boxcads" name="nome" id="casnome" type="text" placeholder="Nome">
+            <input class="boxcads" name="cpf" id="cascpf" type="number" placeholder="CPF">
+            <input class="boxcads" name="email" id="casemail" type="email" placeholder="Email">
+            <input class="boxcads" name="senha" id="cassenha" type="password" placeholder="Senha">
+            <input class="boxcads" name="cidade" id="cascicad" type="text" placeholder="Cidade">
+            <input class="boxcads" name="instituicao" id="casinsti" type="text" placeholder="Instituição">
+            <input class="boxcads" name="file" id="casfile" type="file" placeholder="Anexar Arquivo">
+        </div>
+        <br>
+        <div class="divbtncad">
+            <button class="btncad" id="InstBtn">Adicionar</button>
+        </div>
     </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-storage.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
@@ -65,37 +65,79 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase();
+    const storage = getStorage();
 
-    var cpfInput = document.getElementById("cascpf");
-    var nomeInput = document.getElementById("casnome");
-    var emailInput = document.getElementById("casemail");
-    var senhaInput = document.getElementById("cassenha");
-    var cidadeInput = document.getElementById("cascicad");
-    var instituicaoInput = document.getElementById("casinsti");
+    const cpfInput = document.getElementById("cascpf");
+    const nomeInput = document.getElementById("casnome");
+    const emailInput = document.getElementById("casemail");
+    const senhaInput = document.getElementById("cassenha");
+    const cidadeInput = document.getElementById("cascicad");
+    const instituicaoInput = document.getElementById("casinsti");
+    const fileInput = document.getElementById("casfile");
 
-    var addBtn = document.getElementById("InstBtn");
+    const addBtn = document.getElementById("InstBtn");
 
-    function AdicionarDados(){
+    function resetFields() {
+        cpfInput.value = '';
+        nomeInput.value = '';
+        emailInput.value = '';
+        senhaInput.value = '';
+        cidadeInput.value = '';
+        instituicaoInput.value = '';
+        fileInput.value = '';
+    }
+
+    function AdicionarDados() {
         if (senhaInput.value.length < 8) {
             alert("A senha deve ter pelo menos 8 caracteres.");
             return;
         }
 
-        set(ref(db, "usuarios/" + cpfInput.value),{
-            cpf: cpfInput.value,
-            email: emailInput.value,
-            senha: senhaInput.value,
-            cidade: cidadeInput.value,
-            nome: nomeInput.value,
-            instituicao: instituicaoInput.value,
-            
-        })
-        .then(()=>{
-            alert("Dados armazenados com sucesso");
-        })
-        .catch((error)=>{
-            alert("Falha ao adicionar dados: " + error);
-        });
+        const file = fileInput.files[0];
+        const storageReference = storageRef(storage, 'files/' + cpfInput.value);
+
+        if (file) {
+            uploadBytes(storageReference, file)
+                .then(snapshot => getDownloadURL(snapshot.ref))
+                .then(downloadURL => {
+                    set(ref(db, "usuarios/" + cpfInput.value), {
+                        cpf: cpfInput.value,
+                        email: emailInput.value,
+                        senha: senhaInput.value,
+                        cidade: cidadeInput.value,
+                        nome: nomeInput.value,
+                        instituicao: instituicaoInput.value,
+                        fileURL: downloadURL
+                    })
+                    .then(() => {
+                        alert("Dados armazenados com sucesso");
+                        resetFields();
+                    })
+                    .catch((error) => {
+                        alert("Falha ao adicionar dados: " + error);
+                    });
+                })
+                .catch((error) => {
+                    alert("Falha ao fazer upload do arquivo: " + error);
+                });
+        } else {
+            set(ref(db, "usuarios/" + cpfInput.value), {
+                cpf: cpfInput.value,
+                email: emailInput.value,
+                senha: senhaInput.value,
+                cidade: cidadeInput.value,
+                nome: nomeInput.value,
+                instituicao: instituicaoInput.value,
+                fileURL: null
+            })
+            .then(() => {
+                alert("Dados armazenados com sucesso");
+                resetFields();
+            })
+            .catch((error) => {
+                alert("Falha ao adicionar dados: " + error);
+            });
+        }
     }
 
     addBtn.addEventListener('click', AdicionarDados);
