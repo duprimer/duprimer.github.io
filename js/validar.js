@@ -70,6 +70,78 @@ const db = getDatabase();
 
 
 
+function addItemToTable({ key, cpf, email, instituicao, nome, senha, cidade, documento }) {
+    const tbody = document.getElementById('tbody1');
+    const row = document.createElement("tr");
+
+    const checkboxCell = document.createElement("td");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkboxCell.appendChild(checkbox);
+    row.appendChild(checkboxCell);
+
+    const cellContents = [cpf, email, instituicao, nome, senha, cidade, documento];
+    cellContents.forEach(content => {
+        const cell = document.createElement("td");
+        cell.textContent = content || "";
+        row.appendChild(cell);
+    });
+
+    const actionsCell = document.createElement("td");
+
+    // Botão para abrir a imagem
+    const openImageButton = createButton("Abrir Imagem", "open-image-button", () => {
+        if (documento) {
+            const storageRef = storage.ref();
+            storageRef.child(documento).getDownloadURL().then(url => {
+                window.open(url, '_blank');
+            }).catch(error => {
+                console.error("Erro ao obter o URL da imagem: ", error);
+            });
+        } else {
+            console.error("Documento não encontrado para o usuário:", key);
+        }
+    });
+
+    // Botões de Excluir e Alterar
+    const deleteButton = createButton("Excluir", "delete-button", () => deleteUser(key));
+    const editButton = createButton("Alterar", "edit-button", () => openEditPopup({ key, cpf, email, instituicao, nome, senha, cidade, documento }));
+
+    // Adicionando os botões à célula de ações
+    [deleteButton, editButton, openImageButton].forEach(button => actionsCell.appendChild(button));
+
+    // Adicionando a célula de ações à linha
+    row.appendChild(actionsCell);
+   
+
+    const registerCell = document.createElement("td");
+    const registerButton = createButton("Registrar", "register-button", () => registerUser(email, senha));
+    registerCell.appendChild(registerButton);
+    row.appendChild(registerCell);
+    // Adicionando a linha à tabela
+    tbody.appendChild(row);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function registerUsers() {
