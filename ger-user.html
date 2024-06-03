@@ -12,11 +12,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/polyfills.umd.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script>
-        console.log("jsPDF foi carregado:", typeof jsPDF !== 'undefined');
-    </script>
+    <!-- Include jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <!-- Include jsPDF-AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+        <script>
+            console.log("jsPDF foi carregado:", typeof jsPDF !== 'undefined');
+        </script>
 </head>
 <body>
     <div class="grid-container">
@@ -291,13 +293,64 @@
             }
 
             function generatePDF() {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                doc.text("Relatório de Usuários", 10, 10);
-                doc.autoTable({ html: '#tab12' });
-                doc.save('usuarios.pdf');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+
+            // Adiciona um título ao PDF
+            doc.setFontSize(18);
+            doc.setTextColor(40);
+            doc.text("Relatório de Usuários", 10, 10);
+
+            // Estiliza e adiciona a tabela
+            doc.autoTable({
+
+                html: '#tab12',
+                startY: 20, // A posição Y inicial da tabela
+                columns: [
+                    { header: 'Nome', dataKey: 'Nome' },
+                    { header: 'Email', dataKey: 'email' },
+                    {header:  'instituicao', dataKey: 'instituicao'},
+                    {header: 'cidade', dataKey: 'cidade'},
+                    {header: '', dataKey: ''},
+
+                ],
+
+                html: '#tab12',
+                startY: 20, // A posição Y inicial da tabela
+                styles: {
+                    fontSize: 12,
+                    cellPadding: 5,
+                    halign: 'center', // Alinhamento horizontal das células
+                    valign: 'middle', // Alinhamento vertical das células
+                    lineColor: [44, 62, 80], // Cor das linhas das células
+                    lineWidth: 0.1 // Espessura das linhas das células
+                },
+                headStyles: {
+                    fillColor: [22, 160, 133], // Cor de fundo do cabeçalho
+                    textColor: 255,            // Cor do texto do cabeçalho
+                    fontStyle: 'bold'          // Estilo da fonte do cabeçalho
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255], // Cor de fundo do corpo
+                    textColor: 0               // Cor do texto do corpo
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 240, 240] // Cor de fundo das linhas alternadas
+                },
+                margin: { top: 20 } // Margem superior
+            });
+
+            // Adiciona um rodapé
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.text('Página ' + String(i) + ' de ' + String(pageCount), 10, 290);
             }
 
+            // Salva o PDF
+            doc.save('usuarios.pdf');
+        }
             function openDocumentLink(documentURL) {
                 window.open(documentURL, '_blank');
             }
