@@ -1,25 +1,28 @@
 <!DOCTYPE html>
-
+<html lang="pt-BR">
 <head>
-    <lang="pt-BR"></lan>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-       
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" 
-      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" 
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    <!-- Include jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <!-- Include jsPDF-AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <div class="grid-container">
         <div class="grid-item1">
-            <img class="logoh" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
+            <img class="logoh" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="Logo">
             <div class="user-photo-container">
-                <img src="https://img.freepik.com/psd-gratuitas/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.2082370165.1715817600&semt=sph" alt="User photo" class="user-photo">
+                <img src="https://img.freepik.com/psd-gratuitas/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671142.jpg?size=338&ext=jpg" alt="User photo" class="user-photo">
                 <div class="cinfo"><p class="pinfo">caixa de informação</p></div>
             </div>
             <nav class="menu">    
@@ -27,184 +30,239 @@
                     <li class="btnmenu"><a class="a2" href="ger-hor.html">HORÁRIOS</a></li>
                     <li class="btnmenu"><a class="a2" href="ger-user.html">USUÁRIOS</a></li>
                     <li class="btnmenu"><a class="a2" href="ger-rot.html">ROTAS</a></li>              
-                   
                     <li class="btnmenu"><a class="a2" href="index.html">SAIR</a></li>
                 </ul>   
-            </nav>
+            </nav>            
         </div>
         <div class="grid-item2">
-            <h1 class="arger">Área de Gerenciamento de Rotas</h1>
+            <h1 class="arger">Área de Gerenciamento de Rota</h1>
             <div class="boxtab">
-                <div class="cabetab"> 
-                    <p class="pcabe"> <input type="text" name="pesquisa_por_aluno" id="pesid" placeholder="pesquisa por aluno"> </p>        
-                    <button id="btnpes"><i class="fas fa-search"></i> pesquisa </button>
+                <div class="cabetab">
+                    <p class="pcabe">
+                        <button id="selectAllButton" onclick="toggleSelectAll()">Selecionar Todos</button>
+                        <button id="gePdf" onclick="generatePDF()">Gerar PDF</button>
+                        <input type="text" name="pesquisa_por_nome" id="pesNome" placeholder="Pesquisa por nome">
+                        <button id="btnPesNome"><i class="fas fa-search"></i> Pesquisa</button>
+                    </p>
+                    <p class="pcabe">
+                        <input type="text" name="pesquisa_por_cpf" id="pesCpf" placeholder="Pesquisa por CPF">
+                        <button id="btnPesCpf"><i class="fas fa-search"></i> Pesquisa</button>
+                    </p>
                 </div>
-                <table id="tab12" class="table table-dark">
-                    <thead>
-                        <th>Son</th>
-                        <th>Horarios</th>
-                        <th>Veiculos</th>
-                        <th>Saidas</th>
-                        <th>Destinos</th>
-                        <th>Edit</th>
-                    </thead>
-                    <tbody id="tbody1"></tbody>
-                </table>
-                
-
-                
+                <div class="scrollable-table-container">
+                    <table id="tab12" class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th>Seleção</th>
+                                <th>CIDADE</th>
+                                <th>HORÁRIO</th>
+                                <th>SAIDA</th>
+                                <th>DESTINO</th>                      
+                            </tr>
+                        </thead>
+                        <tbody id="tbody1"></tbody>
+                    </table>
+                </div>
                 <button class="btnfun"><i class="fa-solid fa-plus"></i> <a class="a2" href="cadastrarota.html">Adicionar</a></button>
             </div>
             <!-- Popup para edição -->
-            <div id="editPopup" class="popup"> 
+            <div id="editPopup" class="popup">
                 <div class="popup-content">
-                    <img class="imgpop" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
-                    <input type="text" class="editpop" id="editHorarios" placeholder="Novo Horário">
-                    <input type="text" class="editpop" id="editVeiculos" placeholder="Novo Veículo">
-                    <input type="text" class="editpop" id="editSaidas" placeholder="Nova Saída">
-                    <input type="text" class="editpop" id="editDestinos" placeholder="Novo Destino">
-                    <button onclick="saveChanges()">Salvar</button>
-                    
-                    <button class="btnfun" onclick="closeEditPopup()">Fechar Popup</button> <!-- Botão para fechar o popup -->
+                    <img class="logohpop" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="Logo Popup">
+                    <input type="hidden" id="editKey">
+                    <input type="text" class="editpop" id="editCpf" placeholder="Novo CPF">
+                    <input type="text" class="editpop" id="editEmail" placeholder="Novo Email">
+                    <input type="text" class="editpop" id="editInstituicao" placeholder="Nova Instituição">
+                    <input type="text" class="editpop" id="editNome" placeholder="Novo Nome">
+                    <input type="text" class="editpop" id="editSenha" placeholder="Nova Senha">
+                    <input type="text" class="editpop" id="editCidade" placeholder="Nova Cidade">
+                    <input class="boxcads" name="file" id="casfile" type="file" placeholder="Anexar Arquivo">                   
+                    <button id="saveButton" onclick="saveChanges()">Salvar</button>
+                    <button id="cancelButton" onclick="closeEditPopup()">Cancelar</button>
                 </div>
             </div>
         </div>
-    </div>
 
-<script type="module">
-    var stdNo = 0;
-    var tbody = document.getElementById('tbody1');
+        <div id="error-message" style="color: red; margin-top: 10px; display: none;"></div>
 
-    function AddItemToTable(Horarios, veiculos, Saidas, Destinos) {
-        let trow = document.createElement("tr");
-        let td1 = document.createElement("td");
-        let td2 = document.createElement("td");
-        let td3 = document.createElement("td");
-        let td4 = document.createElement("td");
-        let td5 = document.createElement("td");
-        let td8 = document.createElement("td"); // Nova célula para os botões
+        <script>
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
+                authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+                databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+                projectId: "gloriamobi-5a5bf",
+                storageBucket: "gloriamobi-5a5bf.appspot.com",
+                messagingSenderId: "94268964690",
+                appId: "1:94268964690:web:d7809308d1a73b555a848b",
+                measurementId: "G-Y7M27KHFLD"
+            };
 
-        td1.innerHTML = ++stdNo;
-        td2.innerHTML = Horarios || "";   
-        td3.innerHTML = veiculos || "";
-        td4.innerHTML = Saidas || "";
-        td5.innerHTML = Destinos || "";
-        
-        // Botão de Excluir
-        let deleteButton = document.createElement("button");
-        deleteButton.textContent = "Excluir";
-        deleteButton.classList.add("delete-button");
-        deleteButton.addEventListener("click", function() {
-            // Adicione aqui a lógica para excluir o usuário
-            // Você pode usar o ID do usuário ou outras informações para identificar o usuário a ser excluído
-        });
+            // Initialize Firebase
+            const app = firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+            const storage = firebase.storage();
 
-        // Botão de Alterar
-        let editButton = document.createElement("button");
-        editButton.textContent = "Alterar";
-        editButton.classList.add("edit-button");
-        editButton.addEventListener("click", function() {
-            openEditPopup(Horarios, veiculos, Saidas, Destinos); // Chamada da função para abrir o popup de edição
-        });
-
-        td8.appendChild(deleteButton);
-        td8.appendChild(editButton);
-
-        trow.appendChild(td1);
-        trow.appendChild(td2);
-        trow.appendChild(td3);
-        trow.appendChild(td4);
-        trow.appendChild(td5);
-        trow.appendChild(td8); // Adicionando a nova célula com os botões
-
-        tbody.appendChild(trow);
-    }
-
-    function saveChanges() {
-        // Obter os novos valores dos campos de edição
-        const novoHorarios = document.getElementById('editHorarios').value;
-        const novoVeiculos = document.getElementById('editVeiculos').value;
-        const novaSaidas = document.getElementById('editSaidas').value;
-        const novoDestinos = document.getElementById('editDestinos').value;
-
-        // Atualizar os dados no Firebase com os novos valores
-        // Por exemplo, se `idDoItem` é o identificador único do item a ser atualizado:
-        const idDoItem = "idDoItem"; // Defina o ID do item que está sendo editado
-        const itemRef = ref(db, "rota" + idDoItem);
-        update(itemRef, {
-            Horarios: novoHorarios,
-            Veiculos: novoVeiculos,
-            Saidas: novaSaidas,
-            Destinos: novoDestinos
-        }).then(() => {
-            // Sucesso ao atualizar os dados
-            console.log("Dados atualizados com sucesso!");
-            // Feche o popup de edição
-            
-        }).catch((error) => {
-            // Erro ao atualizar os dados
-            console.error("Erro ao atualizar os dados: ", error);
-        });
-    }
-
-    function AddAllItensToTable(rotas) {
-        stdNo = 0;
-        tbody.innerHTML = "";
-        rotas.forEach(rota => {
-            AddItemToTable(rota.Horarios, rota.Veiculos, rota.Saidas, rota.Destinos);
-        });
-    }
-
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-        authDomain: "glor-ae49f.firebaseapp.com",
-        databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-        projectId: "glor-ae49f",
-        storageBucket: "glor-ae49f.appspot.com",
-        messagingSenderId: "677710403853",
-        appId: "1:677710403853:web:f67284b068399eebb97844"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase();
-
-    function getAllDataOnce() {
-        const dbRef = ref(db, "rota");
-
-        get(dbRef).then((snapshot) => {
-            var rotas = [];
-            snapshot.forEach((childSnapshot) => {
-                rotas.push(childSnapshot.val());
+            // Event listeners for search buttons
+            document.getElementById('btnPesNome').addEventListener('click', () => {
+                const pesquisaNome = document.getElementById('pesNome').value.trim();
+                if (pesquisaNome !== '') {
+                    searchByField('nome', pesquisaNome);
+                }
             });
-            AddAllItensToTable(rotas);
-        }).catch((error) => {
-            console.error("Erro ao obter os dados: ", error);
-        });
-    }
 
-    window.onload = getAllDataOnce;
+            document.getElementById('btnPesCpf').addEventListener('click', () => {
+                const pesquisaCpf = document.getElementById('pesCpf').value.trim();
+                if (pesquisaCpf !== '') {
+                    searchByField('cpf', pesquisaCpf);
+                }
+            });
 
-    // Função para abrir o popup de edição
-    function openEditPopup(Horarios, veiculos, Saidas, Destinos) {
-        document.getElementById('editHorarios').value = Horarios;
-        document.getElementById('editVeiculos').value = veiculos;
-        document.getElementById('editSaidas').value = Saidas;
-        document.getElementById('editDestinos').value = Destinos;
-        document.getElementById('editPopup').style.display = 'block';
-    }
+            document.getElementById('pesNome').addEventListener('input', () => {
+                if (document.getElementById('pesNome').value.trim() === '') {
+                    getAllDataOnce();
+                }
+            });
 
-   
+            document.getElementById('pesCpf').addEventListener('input', () => {
+                if (document.getElementById('pesCpf').value.trim() === '') {
+                    getAllDataOnce();
+                }
+            });
 
-    // Função para salvar as alterações
-    
+            function searchByField(field, value) {
+                db.collection("route").where(field, "==", value).get()
+                    .then(querySnapshot => {
+                        const users = [];
+                        querySnapshot.forEach(doc => {
+                            const user = doc.data();
+                            user.key = doc.id;
+                            users.push(user);
+                        });
+                        addAllItemsToTable(users);
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter os dados: ", error);
+                    });
+            }
 
-    function closeEditPopup() {
-        document.getElementById('editPopup').style.display = 'none';
-    }
-</script>
-<script src="js/abrirpopup.js"></script>
+            function getAllDataOnce() {
+                db.collection("route").get()
+                    .then(querySnapshot => {
+                        const users = [];
+                        querySnapshot.forEach(doc => {
+                            const user = doc.data();
+                            user.key = doc.id;
+                            users.push(user);
+                        });
+                        addAllItemsToTable(users);
+                    })
+                    .catch(error => {
+                        console.error("Erro ao obter os dados: ", error);
+                    });
+            }
 
+            function addAllItemsToTable(users) {
+                const tbody = document.getElementById('tbody1');
+                tbody.innerHTML = ''; // Clear the table first
+                tbody.innerHTML = ''; // Limpa a tabela antes de adicionar os novos dados
+                users.forEach(user => {
+                    addItemToTable(user);
+                });
+            }
+
+            function addItemToTable(user) {
+                const tbody = document.getElementById('tbody1');
+                const row = tbody.insertRow();
+
+                // Criação das células e adição dos dados
+                const cellSelect = row.insertCell(0);
+                const cellCity = row.insertCell(1);
+                const cellDepartureTime = row.insertCell(2);
+                const cellExitPoint = row.insertCell(3);
+                const cellRouteUni = row.insertCell(4);                
+                
+                // Adicionando conteúdo às células
+                cellSelect.innerHTML = `<input type="checkbox" class="user-checkbox" data-key="${user.key}">`;
+                cellCity.innerText = user.City;
+                cellDepartureTime.innerText = user.DepartureTime;
+                cellExitPoint.innerText = user.ExitPoint;
+                cellRouteUni.innerText = user.RouteUni;
+                
+            }
+            
+
+            function toggleSelectAll() {
+                const checkboxes = document.querySelectorAll('.user-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            }
+
+            function generatePDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.autoTable({ html: '#tab12' });
+                doc.save('route-relatorio.pdf');
+            }
+
+            function editUser(key) {
+                // Abre o popup de edição e preenche os campos com os dados do usuário
+                db.collection("users").doc(key).get().then(doc => {
+                    if (doc.exists) {
+                        const user = doc.data();
+                        document.getElementById('editKey').value = key;
+                        document.getElementById('editCpf').value = user.cpf;
+                        document.getElementById('editEmail').value = user.email;
+                        document.getElementById('editInstituicao').value = user.instituicao;
+                        document.getElementById('editName').value = user.name;
+                        document.getElementById('editSenha').value = user.senha;
+                        document.getElementById('editroute').value = user.route;
+                        document.getElementById('editPopup').style.display = 'block';
+                    }
+                });
+            }
+
+            function closeEditPopup() {
+                document.getElementById('editPopup').style.display = 'none';
+            }
+
+            function saveChanges() {
+                const key = document.getElementById('editKey').value;
+                const updatedData = {
+                    City: document.getElementById('editCpf').value,
+                    DepartureTime: document.getElementById('editEmail').value,
+                    ExitPoint: document.getElementById('editInstituicao').value,
+                    RouteUni: document.getElementById('editName').value,
+                    
+                };
+
+                db.collection("users").doc(key).update(updatedData).then(() => {
+                    closeEditPopup();
+                    getAllDataOnce();
+                }).catch(error => {
+                    console.error("Erro ao salvar as mudanças: ", error);
+                });
+            }
+
+            function deleteUser(key) {
+                db.collection("users").doc(key).delete().then(() => {
+                    getAllDataOnce();
+                }).catch(error => {
+                    console.error("Erro ao deletar usuário: ", error);
+                });
+            }
+
+            function registerUser(key) {
+                // Implemente a lógica para registrar o usuário aqui
+                console.log("Registrar usuário com chave: ", key);
+            }
+
+            window.onload = function() {
+                getAllDataOnce();
+            };
+        </script>
+    </div>
 </body>
 </html>

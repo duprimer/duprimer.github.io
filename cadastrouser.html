@@ -12,7 +12,6 @@
 <body>
 
 <div class="grid-container">
-
     <div class="grid-item1">
         <img class="logoh" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="">
         <div class="user-photo-container">
@@ -40,7 +39,6 @@
             <input class="boxcads" name="senha" id="cassenha" type="password" placeholder="Senha">
             <input class="boxcads" name="cidade" id="cascicad" type="text" placeholder="Cidade">
             <input class="boxcads" name="instituicao" id="casinsti" type="text" placeholder="Instituição">
-            <input class="boxcads" name="file" id="casfile" type="file" placeholder="Anexar Arquivo">
         </div>
         <br>
         <div class="divbtncad">
@@ -50,22 +48,21 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-storage.js";
+    import { getFirestore, collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-        authDomain: "glor-ae49f.firebaseapp.com",
-        databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-        projectId: "glor-ae49f",
-        storageBucket: "glor-ae49f.appspot.com",
-        messagingSenderId: "677710403853",
-        appId: "1:677710403853:web:f67284b068399eebb97844"
+        apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
+                authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+                databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+                projectId: "gloriamobi-5a5bf",
+                storageBucket: "gloriamobi-5a5bf.appspot.com",
+                messagingSenderId: "94268964690",
+                appId: "1:94268964690:web:d7809308d1a73b555a848b",
+                measurementId: "G-Y7M27KHFLD"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase();
-    const storage = getStorage();
+    const db = getFirestore(app);
 
     const cpfInput = document.getElementById("cascpf");
     const nomeInput = document.getElementById("casnome");
@@ -73,7 +70,7 @@
     const senhaInput = document.getElementById("cassenha");
     const cidadeInput = document.getElementById("cascicad");
     const instituicaoInput = document.getElementById("casinsti");
-    const fileInput = document.getElementById("casfile");
+    
 
     const addBtn = document.getElementById("InstBtn");
 
@@ -84,59 +81,30 @@
         senhaInput.value = '';
         cidadeInput.value = '';
         instituicaoInput.value = '';
-        fileInput.value = '';
+        
     }
 
-    function AdicionarDados() {
+    async function AdicionarDados() {
         if (senhaInput.value.length < 8) {
             alert("A senha deve ter pelo menos 8 caracteres.");
             return;
         }
 
-        const file = fileInput.files[0];
-        const storageReference = storageRef(storage, 'files/' + cpfInput.value);
-
-        if (file) {
-            uploadBytes(storageReference, file)
-                .then(snapshot => getDownloadURL(snapshot.ref))
-                .then(downloadURL => {
-                    set(ref(db, "usuarios/" + cpfInput.value), {
-                        cpf: cpfInput.value,
-                        email: emailInput.value,
-                        senha: senhaInput.value,
-                        cidade: cidadeInput.value,
-                        nome: nomeInput.value,
-                        instituicao: instituicaoInput.value,
-                        fileURL: downloadURL
-                    })
-                    .then(() => {
-                        alert("Dados armazenados com sucesso");
-                        resetFields();
-                    })
-                    .catch((error) => {
-                        alert("Falha ao adicionar dados: " + error);
-                    });
-                })
-                .catch((error) => {
-                    alert("Falha ao fazer upload do arquivo: " + error);
-                });
-        } else {
-            set(ref(db, "usuarios/" + cpfInput.value), {
+        try {
+            await setDoc(doc(db, "users", cpfInput.value), {
                 cpf: cpfInput.value,
                 email: emailInput.value,
                 senha: senhaInput.value,
                 cidade: cidadeInput.value,
                 nome: nomeInput.value,
-                instituicao: instituicaoInput.value,
-                fileURL: null
-            })
-            .then(() => {
-                alert("Dados armazenados com sucesso");
-                resetFields();
-            })
-            .catch((error) => {
-                alert("Falha ao adicionar dados: " + error);
+                instituicao: instituicaoInput.value
+              
             });
+
+            alert("Dados armazenados com sucesso");
+            resetFields();
+        } catch (error) {
+            alert("Falha ao adicionar dados: " + error);
         }
     }
 

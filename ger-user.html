@@ -10,15 +10,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
     <!-- Include jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <!-- Include jsPDF-AutoTable -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
-        <script>
-            console.log("jsPDF foi carregado:", typeof jsPDF !== 'undefined');
-        </script>
 </head>
 <body>
     <div class="grid-container">
@@ -96,19 +93,20 @@
         <script>
             // Firebase configuration
             const firebaseConfig = {
-                apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-                authDomain: "glor-ae49f.firebaseapp.com",
-                databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-                projectId: "glor-ae49f",
-                storageBucket: "glor-ae49f.appspot.com",
-                messagingSenderId: "677710403853",
-                appId: "1:677710403853:web:f67284b068399eebb97844"
+                apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
+                authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+                databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+                projectId: "gloriamobi-5a5bf",
+                storageBucket: "gloriamobi-5a5bf.appspot.com",
+                messagingSenderId: "94268964690",
+                appId: "1:94268964690:web:d7809308d1a73b555a848b",
+                measurementId: "G-Y7M27KHFLD"
             };
 
             // Initialize Firebase
             const app = firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
-            const db = firebase.database();
+            const db = firebase.firestore();
             const storage = firebase.storage();
 
             // Event listeners for search buttons
@@ -139,17 +137,13 @@
             });
 
             function searchByField(field, value) {
-                db.ref("usuarios").orderByChild(field).equalTo(value).once('value')
-                    .then(snapshot => {
+                db.collection("users").where(field, "==", value).get()
+                    .then(querySnapshot => {
                         const users = [];
-                        snapshot.forEach(childSnapshot => {
-                            const user = childSnapshot.val();
-                            if (typeof user === 'object' && user !== null) {
-                                user.key = childSnapshot.key;
-                                users.push(user);
-                            } else {
-                                console.error("Expected object, but got:", user);
-                            }
+                        querySnapshot.forEach(doc => {
+                            const user = doc.data();
+                            user.key = doc.id;
+                            users.push(user);
                         });
                         addAllItemsToTable(users);
                     })
@@ -159,17 +153,13 @@
             }
 
             function getAllDataOnce() {
-                db.ref("usuarios").once('value')
-                    .then(snapshot => {
+                db.collection("users").get()
+                    .then(querySnapshot => {
                         const users = [];
-                        snapshot.forEach(childSnapshot => {
-                            const user = childSnapshot.val();
-                            if (typeof user === 'object' && user !== null) {
-                                user.key = childSnapshot.key;
-                                users.push(user);
-                            } else {
-                                console.error("Expected object, but got:", user);
-                            }
+                        querySnapshot.forEach(doc => {
+                            const user = doc.data();
+                            user.key = doc.id;
+                            users.push(user);
                         });
                         addAllItemsToTable(users);
                     })
@@ -178,37 +168,74 @@
                     });
             }
 
-            function addItemToTable(user) {
+            function addAllItemsToTable(users) {
                 const tbody = document.getElementById('tbody1');
-                const tr = document.createElement('tr');
-
-                tr.innerHTML = `
-                    <td><input type="checkbox"></td>
-                    <td>${user.cpf}</td>
-                    <td>${user.email}</td>
-                    <td>${user.instituicao}</td>
-                    <td>${user.nome}</td>
-                    <td>${user.senha}</td>
-                    <td>${user.cidade}</td>
-                    <td><button onclick="openDocumentLink('${user.fileURL}')">Documento</button></td>
-                    <td>
-                        <button onclick="editItem('${user.key}', '${user.cpf}', '${user.email}', '${user.instituicao}', '${user.nome}', '${user.senha}', '${user.cidade}')">Editar</button>
-                        <button onclick="deleteItem('${user.key}')">Excluir</button>
-                    </td>
-                    <td><button onclick="registerUser('${user.key}', '${user.email}', '${user.senha}')">Registrar</button></td>
-                `;
-                tbody.appendChild(tr);
+                tbody.innerHTML = ''; // Clear the table first
+                tbody.innerHTML = ''; // Limpa a tabela antes de adicionar os novos dados
+                users.forEach(user => {
+                    addItemToTable(user);
+                });
             }
 
-            function editItem(key, cpf, email, instituicao, nome, senha, cidade) {
-                document.getElementById('editKey').value = key;
-                document.getElementById('editCpf').value = cpf;
-                document.getElementById('editEmail').value = email;
-                document.getElementById('editInstituicao').value = instituicao;
-                document.getElementById('editNome').value = nome;
-                document.getElementById('editSenha').value = senha;
-                document.getElementById('editCidade').value = cidade;
-                document.getElementById('editPopup').style.display = 'block';
+            function addItemToTable(user) {
+                const tbody = document.getElementById('tbody1');
+                const row = tbody.insertRow();
+
+                // Criação das células e adição dos dados
+                const cellSelect = row.insertCell(0);
+                const cellCpf = row.insertCell(1);
+                const cellEmail = row.insertCell(2);
+                const cellInstituicao = row.insertCell(3);
+                const cellName = row.insertCell(4);
+                const cellSenha = row.insertCell(5);
+                const cellroute = row.insertCell(6);
+                const cellprofilePicture = row.insertCell(7);
+                const cellAcoes = row.insertCell(8);
+                const cellRegistrar = row.insertCell(9);
+
+                // Adicionando conteúdo às células
+                cellSelect.innerHTML = `<input type="checkbox" class="user-checkbox" data-key="${user.key}">`;
+                cellCpf.innerText = user.cpf;
+                cellEmail.innerText = user.email;
+                cellInstituicao.innerText = user.instituicao;
+                cellName.innerText = user.name;
+                cellSenha.innerText = user.senha;
+                cellroute.innerText = user.route;
+                cellprofilePicture.innerHTML = `<a href="${user.documento}" target="_blank">Ver Documento</a>`;
+                cellAcoes.innerHTML = `<button onclick="editUser('${user.key}')">Editar</button><button onclick="deleteUser('${user.key}')">Deletar</button>`;
+                cellRegistrar.innerHTML = `<button onclick="registerUser('${user.key}')">Registrar</button>`;
+            }
+            
+
+            function toggleSelectAll() {
+                const checkboxes = document.querySelectorAll('.user-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            }
+
+            function generatePDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.autoTable({ html: '#tab12' });
+                doc.save('users.pdf');
+            }
+
+            function editUser(key) {
+                // Abre o popup de edição e preenche os campos com os dados do usuário
+                db.collection("users").doc(key).get().then(doc => {
+                    if (doc.exists) {
+                        const user = doc.data();
+                        document.getElementById('editKey').value = key;
+                        document.getElementById('editCpf').value = user.cpf;
+                        document.getElementById('editEmail').value = user.email;
+                        document.getElementById('editInstituicao').value = user.instituicao;
+                        document.getElementById('editName').value = user.name;
+                        document.getElementById('editSenha').value = user.senha;
+                        document.getElementById('editroute').value = user.route;
+                        document.getElementById('editPopup').style.display = 'block';
+                    }
+                });
             }
 
             function closeEditPopup() {
@@ -217,158 +244,39 @@
 
             function saveChanges() {
                 const key = document.getElementById('editKey').value;
-                const cpf = document.getElementById('editCpf').value;
-                const email = document.getElementById('editEmail').value;
-                const instituicao = document.getElementById('editInstituicao').value;
-                const nome = document.getElementById('editNome').value;
-                const senha = document.getElementById('editSenha').value;
-                const cidade = document.getElementById('editCidade').value;
-                const file = document.getElementById('casfile').files[0];
+                const updatedData = {
+                    cpf: document.getElementById('editCpf').value,
+                    email: document.getElementById('editEmail').value,
+                    instituicao: document.getElementById('editInstituicao').value,
+                    name: document.getElementById('editName').value,
+                    senha: document.getElementById('editSenha').value,
+                    route: document.getElementById('editroute').value,
+                };
 
-                if (file) {
-                    const storageRef = storage.ref().child(`documents/${key}/${file.name}`);
-                    storageRef.put(file).then(() => {
-                        storageRef.getDownloadURL().then(url => {
-                            db.ref("usuarios").child(key).update({
-                                cpf, email, instituicao, nome, senha, cidade, documentoUrl: url
-                            });
-                            closeEditPopup();
-                            getAllDataOnce();
-                        });
-                    }).catch(error => {
-                        console.error("Erro ao fazer upload do arquivo:", error);
-                    });
-                } else {
-                    db.ref("usuarios").child(key).update({ cpf, email, instituicao, nome, senha, cidade })
-                        .then(() => {
-                            closeEditPopup();
-                            getAllDataOnce();
-                        })
-                        .catch(error => {
-                            console.error("Erro ao salvar as alterações:", error);
-                        });
-                }
+                db.collection("users").doc(key).update(updatedData).then(() => {
+                    closeEditPopup();
+                    getAllDataOnce();
+                }).catch(error => {
+                    console.error("Erro ao salvar as mudanças: ", error);
+                });
             }
 
-            function deleteItem(key) {
-                db.ref("usuarios").child(key).remove()
-                    .then(() => {
-                        getAllDataOnce();
-                    })
-                    .catch(error => {
-                        console.error("Erro ao excluir o item:", error);
-                    });
+            function deleteUser(key) {
+                db.collection("users").doc(key).delete().then(() => {
+                    getAllDataOnce();
+                }).catch(error => {
+                    console.error("Erro ao deletar usuário: ", error);
+                });
             }
 
-            function registerUser(key, email, senha) {
-                auth.createUserWithEmailAndPassword(email, senha)
-                    .then(userCredential => {
-                        const user = userCredential.user;
-                        db.ref("usuarios").child(key).update({ uid: user.uid });
-                        alert("Usuário registrado com sucesso!");
-                    })
-                    .catch(error => {
-                        if (error.code === 'auth/email-already-in-use') {
-                            document.getElementById('error-message').textContent = "Este endereço de e-mail já está em uso por outra conta.";
-                            document.getElementById('error-message').style.display = 'block';
-                        } else {
-                            document.getElementById('error-message').textContent = "Ocorreu um erro ao registrar o usuário.";
-                            document.getElementById('error-message').style.display = 'block';
-                        }
-                    });
+            function registerUser(key) {
+                // Implemente a lógica para registrar o usuário aqui
+                console.log("Registrar usuário com chave: ", key);
             }
 
-            function addAllItemsToTable(users) {
-                const tbody = document.getElementById('tbody1');
-                tbody.innerHTML = '';
-                users.forEach(user => addItemToTable(user));
-            }
-
-            function toggleSelectAll() {
-                const checkboxes = document.querySelectorAll('#tbody1 input[type="checkbox"]');
-                const selectAllButton = document.getElementById('selectAllButton');
-                const selectAll = selectAllButton.textContent === 'Selecionar Todos';
-                checkboxes.forEach(checkbox => checkbox.checked = selectAll);
-                selectAllButton.textContent = selectAll ? 'Deselecionar Todos' : 'Selecionar Todos';
-            }
-
-            const logoURL = 'https://im.ge/i/Kj410Y';
-            function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape');
-
-            // Carrega a imagem da logo
-            const img = new Image();
-            img.src = logoURL;
-            img.onload = function() {
-                // Adiciona a logo ao PDF
-                doc.addImage(img, 'PNG', 60, 60, 50, 50); // Ajuste as coordenadas e tamanho conforme necessário
-
-                // Adiciona um título ao PDF
-
-            }
-
-            // Adiciona um título ao PDF
-            doc.setFontSize(35);
-            doc.setTextColor(40);
-            doc.text("Relatório de Usuários", 50, 10);
-
-            // Estiliza e adiciona a tabela
-            doc.autoTable({
-
-                html: '#tab12',
-                startY: 20, // A posição Y inicial da tabela
-                columns: [
-                    { header: 'Nome', dataKey: 'Nome' },
-                    { header: 'Email', dataKey: 'email' },
-                    {header:  'instituicao', dataKey: 'instituicao'},
-                    {header: 'cidade', dataKey: 'cidade'},
-                    {header: '', dataKey: ''},
-
-                ],
-                
-
-                html: '#tab12',
-                startY: 20, // A posição Y inicial da tabela
-                styles: {
-                    fontSize: 12,
-                    cellPadding: 5,
-                    halign: 'center', // Alinhamento horizontal das células
-                    valign: 'middle', // Alinhamento vertical das células
-                    lineColor: [44, 62, 80], // Cor das linhas das células
-                    lineWidth: 0.1 // Espessura das linhas das células
-                },
-                headStyles: {
-                    fillColor: [22, 160, 133], // Cor de fundo do cabeçalho
-                    textColor: 255,            // Cor do texto do cabeçalho
-                    fontStyle: 'bold'          // Estilo da fonte do cabeçalho
-                },
-                bodyStyles: {
-                    fillColor: [255, 255, 255], // Cor de fundo do corpo
-                    textColor: 0               // Cor do texto do corpo
-                },
-                alternateRowStyles: {
-                    fillColor: [240, 240, 240] // Cor de fundo das linhas alternadas
-                },
-                margin: { top: 20 } // Margem superior
-            });
-
-            // Adiciona um rodapé
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(10);
-                doc.text('Página ' + String(i) + ' de ' + String(pageCount), 10, 290);
-            }
-
-            // Salva o PDF
-            doc.save('relatorio.pdf');
-        }
-            function openDocumentLink(documentURL) {
-                window.open(documentURL, '_blank');
-            }
-
-            window.onload = getAllDataOnce;
+            window.onload = function() {
+                getAllDataOnce();
+            };
         </script>
     </div>
 </body>

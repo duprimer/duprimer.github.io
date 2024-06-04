@@ -13,7 +13,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
 </head>
-<body >
+<body>
 
 <div class="grid-container">
 
@@ -37,73 +37,69 @@
         <h1 class="arger">Formulário de Cadastro de Rota</h1>
         <div class="dalog">
             <div class="cabec">Dados de Login</div>
-            <input class="boxcads" name="Horarios" id="casHorarios" type="text" placeholder="Horarios">
-            <input class="boxcads" name="Veiculos" id="casVeiculos" type="number" placeholder="Veiculos">
-            <input class="boxcads" name="Saidas" id="casSaidas" type="text" placeholder="Saidas">
-            <input class="boxcads" name="Destinos" id="casDestinos" type="text" placeholder="Destinos">
+            <input class="boxcads" name="City" id="casCity" type="text" placeholder="cidade">
+            <input class="boxcads" name="DepartureTime" id="casDepartureTime" type="number" placeholder="Horário de saída">
+            <input class="boxcads" name="ExitPoint" id="casExitPoint" type="text" placeholder="Ponto de saída">
+            <input class="boxcads" name="RouteUni" id="casRouteUni" type="text" placeholder="Destinos">
             
             <div class="divbtncad">
                 <button class="btncad" id="InstBtn">Adicionar</button>
-                
             </div>
         </div>
     </div>
 </div>
 
+
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getDatabase, ref, set, get, child, update, remove } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-        authDomain: "glor-ae49f.firebaseapp.com",
-        databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-        projectId: "glor-ae49f",
-        storageBucket: "glor-ae49f.appspot.com",
-        messagingSenderId: "677710403853",
-        appId: "1:677710403853:web:f67284b068399eebb97844"
+        apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
+        authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+        databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+        projectId: "gloriamobi-5a5bf",
+        storageBucket: "gloriamobi-5a5bf.appspot.com",
+        messagingSenderId: "94268964690",
+        appId: "1:94268964690:web:d7809308d1a73b555a848b",
+        measurementId: "G-Y7M27KHFLD"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase();
+    const db = getFirestore(app);
 
-    const horariosInput = document.getElementById("casHorarios");
-    const veiculosInput = document.getElementById("casVeiculos");
-    const saidasInput = document.getElementById("casSaidas");
-    const destinosInput = document.getElementById("casDestinos");
-  
+    const CityInput = document.getElementById("casCity");
+    const DepartureTimeInput = document.getElementById("casDepartureTime");
+    const ExitPointInput = document.getElementById("casExitPoint");
+    const RouteUniInput = document.getElementById("casRouteUni");
+
     const addBtn = document.getElementById("InstBtn");
-    const busBtn = document.getElementById("SelBtn");
-    const upBtn = document.getElementById("UpdBtn");
-    const delBtn = document.getElementById("DelBtn");
 
     function resetFields() {
-        horariosInput.value = '';
-        veiculosInput.value = '';
-        saidasInput.value = '';
-        destinosInput.value = '';
+        CityInput.value = '';
+        DepartureTimeInput.value = '';
+        ExitPointInput.value = '';
+        RouteUniInput.value = '';
     }
 
-    function AdicionarDados(){
-        set(ref(db, "rota/" + horariosInput.value), {
-            Horarios: horariosInput.value,
-            Veiculos: veiculosInput.value,
-            Saidas: saidasInput.value,
-            Destinos: destinosInput.value
-        })
-        .then(() => {
+    async function AdicionarDados() {
+        try {
+            await setDoc(doc(db, "route", CityInput.value), {
+                City: CityInput.value,
+                DepartureTime: DepartureTimeInput.value,
+                ExitPoint: ExitPointInput.value,
+                RouteUni: RouteUniInput.value,
+            });
+
             alert("Dados armazenados com sucesso");
             resetFields();
-        })
-        .catch((error) => {
+        } catch (error) {
             alert("Falha ao adicionar dados: " + error);
-        });
+        }
     }
 
-    
-
     addBtn.addEventListener('click', AdicionarDados);
-   
 </script>
 </body>
 </html>
