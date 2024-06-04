@@ -292,14 +292,26 @@
                 selectAllButton.textContent = selectAll ? 'Deselecionar Todos' : 'Selecionar Todos';
             }
 
+            const logoURL = 'https://im.ge/i/Kj410Y';
             function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('landscape');
 
+            // Carrega a imagem da logo
+            const img = new Image();
+            img.src = logoURL;
+            img.onload = function() {
+                // Adiciona a logo ao PDF
+                doc.addImage(img, 'PNG', 60, 60, 50, 50); // Ajuste as coordenadas e tamanho conforme necessário
+
+                // Adiciona um título ao PDF
+
+            }
+
             // Adiciona um título ao PDF
-            doc.setFontSize(18);
+            doc.setFontSize(35);
             doc.setTextColor(40);
-            doc.text("Relatório de Usuários", 10, 10);
+            doc.text("Relatório de Usuários", 50, 10);
 
             // Estiliza e adiciona a tabela
             doc.autoTable({
@@ -314,6 +326,7 @@
                     {header: '', dataKey: ''},
 
                 ],
+                
 
                 html: '#tab12',
                 startY: 20, // A posição Y inicial da tabela
@@ -349,7 +362,7 @@
             }
 
             // Salva o PDF
-            doc.save('usuarios.pdf');
+            doc.save('relatorio.pdf');
         }
             function openDocumentLink(documentURL) {
                 window.open(documentURL, '_blank');
