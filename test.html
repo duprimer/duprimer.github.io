@@ -43,68 +43,57 @@
     </table>
     <button onclick="generatePDF()">Gerar PDF</button>
     <script>
-        // URL da logo
-        const logoURL = 'https://i.im.ge/2024/06/04/Kj410Y.android-chrome-512x512.png';
-
         function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('landscape'); // Define a orientação como paisagem
 
-            // Carrega a imagem da logo
-            const img = new Image();
-            img.src = logoURL;
-            img.onload = function() {
-                // Adiciona a logo ao PDF
-                doc.addImage(img, 'PNG', 10, 10, 50, 50); // Ajuste as coordenadas e tamanho conforme necessário
+            // Adiciona um título ao PDF
+            doc.setFontSize(18);
+            doc.setTextColor(40);
+            doc.text("Relatório de Usuários", 10, 10);
 
-                // Adiciona um título ao PDF
-                doc.setFontSize(18);
-                doc.setTextColor(40);
-                doc.text("Relatório de Usuários", 70, 30); // Ajusta a posição para não sobrepor a logo
+            // Estiliza e adiciona a tabela, selecionando colunas específicas
+            doc.autoTable({
+                html: '#tab12',
+                startY: 20, // A posição Y inicial da tabela
+                columns: [
+                    { header: 'Nome', dataKey: 'nome' },
+                    { header: 'Email', dataKey: 'email' },
+                    { header: 'País', dataKey: 'pais' },
+                ],
+                styles: {
+                    fontSize: 12,
+                    cellPadding: 5,
+                    halign: 'center', // Alinhamento horizontal das células
+                    valign: 'middle', // Alinhamento vertical das células
+                    lineColor: [44, 62, 80], // Cor das linhas das células
+                    lineWidth: 0.1 // Espessura das linhas das células
+                },
+                headStyles: {
+                    fillColor: [22, 160, 133], // Cor de fundo do cabeçalho
+                    textColor: 255,            // Cor do texto do cabeçalho
+                    fontStyle: 'bold'          // Estilo da fonte do cabeçalho
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255], // Cor de fundo do corpo
+                    textColor: 0               // Cor do texto do corpo
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 240, 240] // Cor de fundo das linhas alternadas
+                },
+                margin: { top: 20 } // Margem superior
+            });
 
-                // Estiliza e adiciona a tabela, selecionando colunas específicas
-                doc.autoTable({
-                    html: '#tab12',
-                    startY: 60, // A posição Y inicial da tabela
-                    columns: [
-                        { header: 'Nome', dataKey: 'nome' },
-                        { header: 'Email', dataKey: 'email' },
-                        { header: 'País', dataKey: 'pais' },
-                    ],
-                    styles: {
-                        fontSize: 12,
-                        cellPadding: 5,
-                        halign: 'center', // Alinhamento horizontal das células
-                        valign: 'middle', // Alinhamento vertical das células
-                        lineColor: [44, 62, 80], // Cor das linhas das células
-                        lineWidth: 0.1 // Espessura das linhas das células
-                    },
-                    headStyles: {
-                        fillColor: [22, 160, 133], // Cor de fundo do cabeçalho
-                        textColor: 255,            // Cor do texto do cabeçalho
-                        fontStyle: 'bold'          // Estilo da fonte do cabeçalho
-                    },
-                    bodyStyles: {
-                        fillColor: [255, 255, 255], // Cor de fundo do corpo
-                        textColor: 0               // Cor do texto do corpo
-                    },
-                    alternateRowStyles: {
-                        fillColor: [240, 240, 240] // Cor de fundo das linhas alternadas
-                    },
-                    margin: { top: 60 } // Margem superior
-                });
+            // Adiciona um rodapé
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.text('Página ' + String(i) + ' de ' + String(pageCount), 10, 200); // Ajuste a posição do rodapé para paisagem
+            }
 
-                // Adiciona um rodapé
-                const pageCount = doc.internal.getNumberOfPages();
-                for (let i = 1; i <= pageCount; i++) {
-                    doc.setPage(i);
-                    doc.setFontSize(10);
-                    doc.text('Página ' + String(i) + ' de ' + String(pageCount), 10, 200); // Ajuste a posição do rodapé para paisagem
-                }
-
-                // Salva o PDF
-                doc.save('usuarios.pdf');
-            };
+            // Salva o PDF
+            doc.save('usuarios.pdf');
         }
     </script>
 </body>

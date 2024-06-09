@@ -56,10 +56,11 @@
                                 <th>Seleção</th>
                                 <th>CPF</th>
                                 <th>Email</th>
-                                <th>Instituição</th>
+                                <th>Rota</th>
                                 <th>Nome</th>
                                 <th>Senha</th>
                                 <th>Cidade Cadastrada</th>
+                                <th>confirmação</th>
                                 <th>Documento</th>
                                 <th>Ações</th>
                                 <th>Registrar</th>
@@ -77,16 +78,16 @@
                     <input type="hidden" id="editKey">
                     <input type="text" class="editpop" id="editCpf" placeholder="Novo CPF">
                     <input type="text" class="editpop" id="editEmail" placeholder="Novo Email">
-                    <input type="text" class="editpop" id="editInstituicao" placeholder="Nova Instituição">
+                    <input type="text" class="editpop" id="editroute" placeholder="Nova rota">
                     <input type="text" class="editpop" id="editNome" placeholder="Novo Nome">
                     <input type="text" class="editpop" id="editSenha" placeholder="Nova Senha">
                     <input type="text" class="editpop" id="editCidade" placeholder="Nova Cidade">
-                    <input class="boxcads" name="file" id="casfile" type="file" placeholder="Anexar Arquivo">                   
+                    <input class="editpop" name="file" id="casfile" type="file" placeholder="Anexar Arquivo">                   
                     <button id="saveButton" onclick="saveChanges()">Salvar</button>
                     <button id="cancelButton" onclick="closeEditPopup()">Cancelar</button>
                 </div>
             </div>
-        </div>
+            
 
         <div id="error-message" style="color: red; margin-top: 10px; display: none;"></div>
 
@@ -176,35 +177,83 @@
                     addItemToTable(user);
                 });
             }
-
             function addItemToTable(user) {
-                const tbody = document.getElementById('tbody1');
-                const row = tbody.insertRow();
+    const tbody = document.getElementById('tbody1');
+    const row = tbody.insertRow();
 
-                // Criação das células e adição dos dados
-                const cellSelect = row.insertCell(0);
-                const cellCpf = row.insertCell(1);
-                const cellEmail = row.insertCell(2);
-                const cellInstituicao = row.insertCell(3);
-                const cellName = row.insertCell(4);
-                const cellSenha = row.insertCell(5);
-                const cellroute = row.insertCell(6);
-                const cellprofilePicture = row.insertCell(7);
-                const cellAcoes = row.insertCell(8);
-                const cellRegistrar = row.insertCell(9);
+    // Criação das células e adição dos dados
+    const cellSelect = row.insertCell(0);
+    const cellCpf = row.insertCell(1);
+    const cellEmail = row.insertCell(2);
+    const cellroute = row.insertCell(3);
+    const cellName = row.insertCell(4);
+    const cellSenha = row.insertCell(5);
+    const cellcidade = row.insertCell(6);
+    const cellconfirmation = row.insertCell(7);
+    const cellDocumento = row.insertCell(8);
+    const cellAcoes = row.insertCell(9);
+    const cellRegistrar = row.insertCell(10);
 
-                // Adicionando conteúdo às células
-                cellSelect.innerHTML = `<input type="checkbox" class="user-checkbox" data-key="${user.key}">`;
-                cellCpf.innerText = user.cpf;
-                cellEmail.innerText = user.email;
-                cellInstituicao.innerText = user.instituicao;
-                cellName.innerText = user.name;
-                cellSenha.innerText = user.senha;
-                cellroute.innerText = user.route;
-                cellprofilePicture.innerHTML = `<a href="${user.documento}" target="_blank">Ver Documento</a>`;
-                cellAcoes.innerHTML = `<button onclick="editUser('${user.key}')">Editar</button><button onclick="deleteUser('${user.key}')">Deletar</button>`;
-                cellRegistrar.innerHTML = `<button onclick="registerUser('${user.key}')">Registrar</button>`;
+    // Adicionando conteúdo às células
+    cellSelect.innerHTML = `<input type="checkbox" class="user-checkbox" data-key="${user.key}">`;
+    cellCpf.innerText = user.cpf;
+    cellEmail.innerText = user.email;
+    cellroute.innerText = user.route;
+    cellName.innerText = user.name;
+    cellSenha.innerText = user.senha;
+    cellcidade.innerText = user.cidade;
+    cellconfirmation.innerText = user.confirmation
+    cellDocumento.innerHTML = `<button onclick="showDocument('${user.key}')">Ver Documento</button>`;
+    cellAcoes.innerHTML = `<button onclick="editUser('${user.key}')">Editar</button><button onclick="deleteUser('${user.key}')">Deletar</button>`;
+    cellRegistrar.innerHTML = `<button onclick="registerUser('${user.key}')">Registrar</button>`;
+}
+
+
+
+function showDocument(key) {
+    // Referência ao documento no Firestore
+    db.collection("users").doc(key).get().then(doc => {
+        if (doc.exists) {
+            const user = doc.data();
+            const imageUrl = user.profilePicture;
+
+            console.log("Documento URL:", imageUrl); // Log para verificar o URL
+
+            if (imageUrl) {
+                // Exibir a imagem em um modal
+                const modal = document.createElement('div');
+                modal.classList.add('modal');
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <img src="${imageUrl}" alt="Documento">
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Fechar o modal ao clicar no botão de fechar
+                modal.querySelector('.close-button').onclick = () => {
+                    document.body.removeChild(modal);
+                };
+
+                // Fechar o modal ao clicar fora do conteúdo do modal
+                modal.onclick = (event) => {
+                    if (event.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                };
+            } else {
+                console.error("URL do documento está undefined");
             }
+        } else {
+            console.error("Documento não encontrado");
+        }
+    }).catch(error => {
+        console.error("Erro ao obter o documento: ", error);
+    });
+}
+
+
             
 
             function toggleSelectAll() {
@@ -214,52 +263,76 @@
                 });
             }
 
-            function generatePDF() {
+            async function generatePDF() {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
-                doc.autoTable({ html: '#tab12' });
-                doc.save('users.pdf');
+
+                // Define the columns and data
+                const headers = [["CPF", "Email", "Rota", "Name",  "Cidade"]];
+                const data = [];
+
+                document.querySelectorAll('#tbody1 tr').forEach(row => {
+                    const rowData = [];
+                    row.querySelectorAll('td').forEach((cell, index) => {
+                        if (index > 0 && index < 9) { // Exclude the first column (checkbox) and last two columns (buttons)
+                            rowData.push(cell.innerText);
+                        }
+                    });
+                    data.push(rowData);
+                });
+
+                doc.autoTable({
+                    head: headers,
+                    body: data
+                });
+
+                doc.save("users.pdf");
             }
+        
 
             function editUser(key) {
-                // Abre o popup de edição e preenche os campos com os dados do usuário
-                db.collection("users").doc(key).get().then(doc => {
-                    if (doc.exists) {
-                        const user = doc.data();
-                        document.getElementById('editKey').value = key;
-                        document.getElementById('editCpf').value = user.cpf;
-                        document.getElementById('editEmail').value = user.email;
-                        document.getElementById('editInstituicao').value = user.instituicao;
-                        document.getElementById('editName').value = user.name;
-                        document.getElementById('editSenha').value = user.senha;
-                        document.getElementById('editroute').value = user.route;
-                        document.getElementById('editPopup').style.display = 'block';
-                    }
-                });
-            }
+    // Abre o popup de edição e preenche os campos com os dados do usuário
+    db.collection("users").doc(key).get().then(doc => {
+        if (doc.exists) {
+            const user = doc.data();
+            document.getElementById('editKey').value = key;
+            document.getElementById('editCpf').value = user.cpf;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editroute').value = user.route;
+            document.getElementById('editNome').value = user.name;
+            document.getElementById('editSenha').value = user.senha;
+            document.getElementById('editCidade').value = user.cidade;
+            document.getElementById('editPopup').style.display = 'block';
+        } else {
+            console.error("Documento não encontrado");
+        }
+    }).catch(error => {
+        console.error("Erro ao obter o documento: ", error);
+    });
+}
 
             function closeEditPopup() {
                 document.getElementById('editPopup').style.display = 'none';
             }
 
             function saveChanges() {
-                const key = document.getElementById('editKey').value;
-                const updatedData = {
-                    cpf: document.getElementById('editCpf').value,
-                    email: document.getElementById('editEmail').value,
-                    instituicao: document.getElementById('editInstituicao').value,
-                    name: document.getElementById('editName').value,
-                    senha: document.getElementById('editSenha').value,
-                    route: document.getElementById('editroute').value,
-                };
+    const key = document.getElementById('editKey').value;
+    const updatedData = {
+        cpf: document.getElementById('editCpf').value,
+        email: document.getElementById('editEmail').value,
+        route: document.getElementById('editroute').value,
+        name: document.getElementById('editNome').value,
+        senha: document.getElementById('editSenha').value,
+        cidade: document.getElementById('editCidade').value,
+    };
 
-                db.collection("users").doc(key).update(updatedData).then(() => {
-                    closeEditPopup();
-                    getAllDataOnce();
-                }).catch(error => {
-                    console.error("Erro ao salvar as mudanças: ", error);
-                });
-            }
+    db.collection("users").doc(key).update(updatedData).then(() => {
+        closeEditPopup();
+        getAllDataOnce();
+    }).catch(error => {
+        console.error("Erro ao salvar as mudanças: ", error);
+    });
+}
 
             function deleteUser(key) {
                 db.collection("users").doc(key).delete().then(() => {
@@ -269,15 +342,22 @@
                 });
             }
 
-            function registerUser(key) {
-                // Implemente a lógica para registrar o usuário aqui
-                console.log("Registrar usuário com chave: ", key);
+            async function registerUser(key, email, password) {
+                try {
+                    await auth.createUserWithEmailAndPassword(email, password);
+                    await db.collection("users").doc(key).update({ confirmacao: 's' });
+                    getAllDataOnce();
+                } catch (error) {
+                    console.error("Erro ao registrar o usuário: ", error);
+                }
             }
 
             window.onload = function() {
                 getAllDataOnce();
             };
         </script>
+
+        <script src="js/abrirpopup.js"></script>
     </div>
 </body>
 </html>

@@ -33,12 +33,13 @@
         <h1 class="arger">Formulário de Cadastro de Usuário</h1>
         <div class="dalog">
             <div class="cabec">Dados de Login</div>
-            <input class="boxcads" name="nome" id="casnome" type="text" placeholder="Nome">
+            <input class="boxcads" name="nome" id="casname" type="text" placeholder="Nome">
             <input class="boxcads" name="cpf" id="cascpf" type="number" placeholder="CPF">
             <input class="boxcads" name="email" id="casemail" type="email" placeholder="Email">
             <input class="boxcads" name="senha" id="cassenha" type="password" placeholder="Senha">
-            <input class="boxcads" name="cidade" id="cascicad" type="text" placeholder="Cidade">
+            <input class="boxcads" name="route" id="cascicad" type="text" placeholder="Cidade">
             <input class="boxcads" name="instituicao" id="casinsti" type="text" placeholder="Instituição">
+            <input class="boxcads" name="file" id="casfile" type="file" placeholder="Anexar Arquivo">
         </div>
         <br>
         <div class="divbtncad">
@@ -52,26 +53,26 @@
 
     const firebaseConfig = {
         apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
-                authDomain: "gloriamobi-5a5bf.firebaseapp.com",
-                databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
-                projectId: "gloriamobi-5a5bf",
-                storageBucket: "gloriamobi-5a5bf.appspot.com",
-                messagingSenderId: "94268964690",
-                appId: "1:94268964690:web:d7809308d1a73b555a848b",
-                measurementId: "G-Y7M27KHFLD"
+        authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+        databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+        projectId: "gloriamobi-5a5bf",
+        storageBucket: "gloriamobi-5a5bf.appspot.com",
+        messagingSenderId: "94268964690",
+        appId: "1:94268964690:web:d7809308d1a73b555a848b",
+        measurementId: "G-Y7M27KHFLD"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     const cpfInput = document.getElementById("cascpf");
-    const nomeInput = document.getElementById("casnome");
+    const nameInput = document.getElementById("casname");
     const emailInput = document.getElementById("casemail");
     const senhaInput = document.getElementById("cassenha");
     const cidadeInput = document.getElementById("cascicad");
     const instituicaoInput = document.getElementById("casinsti");
+    const fileInput = document.getElementById("casfile");
     
-
     const addBtn = document.getElementById("InstBtn");
 
     function resetFields() {
@@ -81,7 +82,18 @@
         senhaInput.value = '';
         cidadeInput.value = '';
         instituicaoInput.value = '';
-        
+        fileInput.value = '';
+    }
+
+    async function readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                resolve(reader.result);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     }
 
     async function AdicionarDados() {
@@ -91,14 +103,20 @@
         }
 
         try {
+            let imageUrl = '';
+            const file = fileInput.files[0];
+            if (file) {
+                imageUrl = await readFileAsBase64(file);
+            }
+
             await setDoc(doc(db, "users", cpfInput.value), {
                 cpf: cpfInput.value,
                 email: emailInput.value,
                 senha: senhaInput.value,
                 cidade: cidadeInput.value,
-                nome: nomeInput.value,
-                instituicao: instituicaoInput.value
-              
+                name: nameInput.value,
+                instituicao: instituicaoInput.value,
+                profilePicture: imageUrl
             });
 
             alert("Dados armazenados com sucesso");
