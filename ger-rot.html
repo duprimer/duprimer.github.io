@@ -163,12 +163,31 @@
             }
 
             function generatePDF() {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                doc.autoTable({ html: '#tab12' });
-                doc.save('route-relatorio.pdf');
-            }
-
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Define o cabeçalho da tabela com as colunas desejadas
+    const headers = [['CIDADE', 'HORÁRIO', 'SAIDA', 'DESTINO']];
+    
+    // Obtém os dados da tabela
+    const data = [];
+    document.querySelectorAll('#tab12 tbody tr').forEach(row => {
+        const rowData = [];
+        row.querySelectorAll('td').forEach(cell => {
+            rowData.push(cell.textContent.trim());
+        });
+        data.push(rowData);
+    });
+    
+    // Gera o PDF com o cabeçalho e os dados
+    doc.autoTable({
+        head: headers,
+        body: data,
+    });
+    
+    // Salva o PDF
+    doc.save('route-relatorio.pdf');
+}
             
 
             function closeEditPopup() {
