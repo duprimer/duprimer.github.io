@@ -23,17 +23,22 @@
             <img class="logoh" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="Logo">
             <div class="user-photo-container">
                 <img src="https://img.freepik.com/psd-gratuitas/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671142.jpg?size=338&ext=jpg" alt="User photo" class="user-photo">
-                <div class="cinfo"><p class="pinfo">caixa de informação</p></div>
+                
+            </div>
+            <div class="cinfo">
+                
+                <p class="pinfo">Email do Usuário</p>
             </div>
             <nav class="menu">    
-                <ul class="menu">
-                    
+                <ul class="menu">    
                     <li class="btnmenu"><a class="a2" href="ger-user.html">USUÁRIOS</a></li>
                     <li class="btnmenu"><a class="a2" href="ger-rot.html">ROTAS</a></li>              
                     <li class="btnmenu"><a class="a2" href="index.html">SAIR</a></li>
                 </ul>   
             </nav>            
         </div>
+        
+
         <div class="grid-item2">
             <h1 class="arger">Área de Gerenciamento de Rota</h1>
             <div class="boxtab">
@@ -211,6 +216,25 @@
                 console.log("Registrar usuário com chave: ", key);
             }
 
+                // Verifique se o usuário está autenticado
+firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+        // O usuário está autenticado, você pode acessar suas informações
+        const userName = user.displayName; // Nome do usuário
+        const userEmail = user.email; // Email do usuário
+
+        // Seletor para o elemento onde você quer exibir o nome e email do usuário
+        const userInfoElement = document.querySelector('.cinfo');
+
+        // Atualizando o HTML do elemento com as informações do usuário
+        userInfoElement.innerHTML = `
+           
+            <p class="pinfo">${userEmail}</p>
+        `;
+    } else {
+        // O usuário não está autenticado, faça o que for necessário
+    }
+});
             window.onload = function() {
                 getAllDataOnce();
             };

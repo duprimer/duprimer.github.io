@@ -4,56 +4,92 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- titulo-->
     <title>Login</title>
+
     <link rel="stylesheet" href="css/styles.css">
+    <!-- fontes  do google fonts-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!--chamada da biblioteca do fire base-->
+
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+
+    <!--chamada da biblioteca do  gerar o pdf -->
     <!-- Include jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <!-- Include jsPDF-AutoTable -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
 </head>
+
+
+
 <body>
+
     <div class="grid-container">
+
         <div class="grid-item1">
             <img class="logoh" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="Logo">
             <div class="user-photo-container">
                 <img src="https://img.freepik.com/psd-gratuitas/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671142.jpg?size=338&ext=jpg" alt="User photo" class="user-photo">
-                <div class="cinfo"><p class="pinfo">caixa de informação</p></div>
+                
+            </div>
+            <div class="cinfo">
+                
+                <p class="pinfo">Email do Usuário</p>
             </div>
             <nav class="menu">    
-                <ul class="menu">
-                    
+                <ul class="menu">    
                     <li class="btnmenu"><a class="a2" href="ger-user.html">USUÁRIOS</a></li>
                     <li class="btnmenu"><a class="a2" href="ger-rot.html">ROTAS</a></li>              
                     <li class="btnmenu"><a class="a2" href="index.html">SAIR</a></li>
                 </ul>   
             </nav>            
         </div>
+        
+
+
+
+
         <div class="grid-item2">
+
             <h1 class="arger">Área de Gerenciamento de Usuários</h1>
+
             <div class="boxtab">
+
                 <div class="cabetab">
-                    <p class="pcabe">
-                        <button id="selectAllButton" onclick="toggleSelectAll()">Selecionar Todos</button>
+
+                    <!--cabeçalho p-->
+                    <p class="pcabe">  
+                      
+                       
                         <button id="gePdf" onclick="generatePDF()">Gerar PDF</button>
+
                         <input type="text" name="pesquisa_por_nome" id="pesNome" placeholder="Pesquisa por nome">
                         <button id="btnPesNome"><i class="fas fa-search"></i> Pesquisa</button>
+
                     </p>
                     <p class="pcabe">
+
                         <input type="text" name="pesquisa_por_cpf" id="pesCpf" placeholder="Pesquisa por CPF">
                         <button id="btnPesCpf"><i class="fas fa-search"></i> Pesquisa</button>
+
                     </p>
                 </div>
+
                 <div class="scrollable-table-container">
+
                     <table id="tab12" class="table table-dark">
                         <thead>
                             <tr>
-                                <th>Seleção</th>
+                                
                                 <th>CPF</th>
                                 <th>Email</th>
                                 <th>Rota</th>
@@ -69,11 +105,14 @@
                 </div>
                 
             </div>
-            <!-- Popup para edição -->
-            <div id="editPopup" class="popup">
+
+            <!-- Popup do botão editar -->
+
+            <div id="editPopup" class="popup">                
                 <div class="popup-content">
                     <img class="logohpop" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="Logo Popup">
                     <input type="hidden" id="editKey">
+
                     <input type="text" class="editpop" id="editCpf" placeholder="Novo CPF">
                     <input type="text" class="editpop" id="editEmail" placeholder="Novo Email">
                     <input type="text" class="editpop" id="editroute" placeholder="Nova rota">
@@ -86,10 +125,11 @@
             </div>
             
 
-        <div id="error-message" style="color: red; margin-top: 10px; display: none;"></div>
         
+        <!-- inicio do js-->
 
         <script>
+
             // Firebase configuration
             const firebaseConfig = {
                 apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
@@ -108,7 +148,9 @@
             const db = firebase.firestore();
             const storage = firebase.storage();
 
-            // Event listeners for search buttons
+            // inicio area de pesquisa
+
+           // eventos ao clicar no botões btn 
             document.getElementById('btnPesNome').addEventListener('click', () => {
                 const pesquisaNome = document.getElementById('pesNome').value.trim();
                 if (pesquisaNome !== '') {
@@ -122,7 +164,7 @@
                     searchByField('cpf', pesquisaCpf);
                 }
             });
-
+             // eventos do campo de pesquisas
             document.getElementById('pesNome').addEventListener('input', () => {
                 if (document.getElementById('pesNome').value.trim() === '') {
                     getAllDataOnce();
@@ -151,6 +193,10 @@
                     });
             }
 
+            // fim  da area  pesquisa
+
+
+
             function getAllDataOnce() {
                 db.collection("users").get()
                     .then(querySnapshot => {
@@ -176,28 +222,30 @@
                 });
             }
             function addItemToTable(user) {
-    const tbody = document.getElementById('tbody1');
-    const row = tbody.insertRow();
+            const tbody = document.getElementById('tbody1');
+            const row = tbody.insertRow();
 
-    // Criação das células e adição dos dados
-    const cellSelect = row.insertCell(0);
-    const cellCpf = row.insertCell(1);
-    const cellEmail = row.insertCell(2);
-    const cellroute = row.insertCell(3);
-    const cellName = row.insertCell(4);    
-    const cellconfirmation = row.insertCell(5);
-    const cellDocumento = row.insertCell(6);
-    const cellAcoes = row.insertCell(7);
+            //   Criação do topo   das células e colunas das tabelas de 0 a 7  e a chamada dos id do banco de dados 
+
+            
+            const cellCpf = row.insertCell(0);
+            const cellEmail = row.insertCell(1);
+            const cellroute = row.insertCell(2);
+            const cellName = row.insertCell(3);    
+            const cellconfirmation = row.insertCell(4);
+            const cellDocumento = row.insertCell(5);
+            const cellAcoes = row.insertCell(6);
  
-    // Adicionando conteúdo às células
-    cellSelect.innerHTML = `<input type="checkbox" class="user-checkbox" data-key="${user.key}">`;
-    cellCpf.innerText = user.cpf;
-    cellEmail.innerText = user.email;
-    cellroute.innerText = user.route;
-    cellName.innerText = user.name;  
-    cellconfirmation.innerText = user.confirmation
-    cellDocumento.innerHTML = `<button onclick="showDocument('${user.key}')">Ver Documento</button>`;
-    cellAcoes.innerHTML = `<button onclick="editUser('${user.key}')">Editar</button><button onclick="deleteUser('${user.key}')">Deletar</button>`;
+         // Adicionando conteúdo às células 
+
+           
+            cellCpf.innerText = user.cpf;
+            cellEmail.innerText = user.email;
+            cellroute.innerText = user.route;
+            cellName.innerText = user.name;  
+            cellconfirmation.innerText = user.confirmation
+            cellDocumento.innerHTML = `<button onclick="showDocument('${user.key}')">Ver Documento</button>`; // botão para ver documentos             
+            cellAcoes.innerHTML = `<button onclick="editUser('${user.key}')">Editar</button><button onclick="deleteUser('${user.key}')">Deletar</button>`; // botões de editar e excluir
 
 }
 
@@ -210,7 +258,7 @@ function showDocument(key) {
             const user = doc.data();
             const imageUrl = user.documentPhoto;
 
-            console.log("Documento URL:", imageUrl); // Log para verificar o URL
+            console.log("Documento URL:", imageUrl); // virifica se a url da imagem é valida 
 
             if (imageUrl) {
                 // Exibir a imagem em um modal
@@ -219,9 +267,10 @@ function showDocument(key) {
                 modal.innerHTML = `
                     <div class="modal-content">
                         <span class="close-button">&times;</span>
-                        <img src="${imageUrl}" alt="Documento">
+                        <img src="${imageUrl}" alt="Documento"> 
                     </div>
-                `;
+                `;// recebe imagem da const imageurl
+
                 document.body.appendChild(modal);
 
                 // Fechar o modal ao clicar no botão de fechar
@@ -249,25 +298,20 @@ function showDocument(key) {
 
             
 
-            function toggleSelectAll() {
-                const checkboxes = document.querySelectorAll('.user-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            }
+           
 
             async function generatePDF() {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
 
                 // Define the columns and data
-                const headers = [["CPF", "Email", "Rota", "Name",  "Cidade"]];
+                const headers = [["CPF", "Email", "Rota", "Name",  "Confirmação"]];
                 const data = [];
 
                 document.querySelectorAll('#tbody1 tr').forEach(row => {
                     const rowData = [];
                     row.querySelectorAll('td').forEach((cell, index) => {
-                        if (index > 0 && index < 9) { // Exclude the first column (checkbox) and last two columns (buttons)
+                        if (index > 0 && index < 9) { //  ignora a coluna 0 primeira coluna de seleção 
                             rowData.push(cell.innerText);
                         }
                     });
@@ -279,14 +323,14 @@ function showDocument(key) {
                     body: data
                 });
 
-                doc.save("users.pdf");
+                doc.save("users.pdf"); // gera o pdf 
             }
         
 
             function editUser(key) {
-    // Abre o popup de edição e preenche os campos com os dados do usuário
-    db.collection("users").doc(key).get().then(doc => {
-        if (doc.exists) {
+            // Abre o popup de edição e preenche os campos com os dados do usuário
+            db.collection("users").doc(key).get().then(doc => {
+             if (doc.exists) {
             const user = doc.data();
             document.getElementById('editKey').value = key;
             document.getElementById('editCpf').value = user.cpf;
@@ -307,9 +351,10 @@ function showDocument(key) {
                 document.getElementById('editPopup').style.display = 'none';
             }
 
-            function saveChanges() {
-    const key = document.getElementById('editKey').value;
-    const updatedData = {
+
+    function saveChanges() {
+        const key = document.getElementById('editKey').value;
+        const updatedData = {
         cpf: document.getElementById('editCpf').value,
         email: document.getElementById('editEmail').value,
         route: document.getElementById('editroute').value,
@@ -333,22 +378,37 @@ function showDocument(key) {
                 });
             }
 
-            async function registerUser(key, email, password) {
-                try {
-                    await auth.createUserWithEmailAndPassword(email, password);
-                    await db.collection("users").doc(key).update({ confirmacao: 's' });
-                    getAllDataOnce();
-                } catch (error) {
-                    console.error("Erro ao registrar o usuário: ", error);
-                }
-            }
+// Verifique se o usuário está autenticado
+firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+        // O usuário está autenticado, você pode acessar suas informações
+        const userName = user.displayName; // Nome do usuário
+        const userEmail = user.email; // Email do usuário
+
+        // Seletor para o elemento onde você quer exibir o nome e email do usuário
+        const userInfoElement = document.querySelector('.cinfo');
+
+        // Atualizando o HTML do elemento com as informações do usuário
+        userInfoElement.innerHTML = `
+           
+            <p class="pinfo">${userEmail}</p>
+        `;
+    } else {
+        // O usuário não está autenticado, faça o que for necessário
+    }
+});
 
             window.onload = function() {
                 getAllDataOnce();
             };
-        </script>
 
-        <script src="js/abrirpopup.js"></script>
-    </div>
+           
+            
+
+                    </script>
+    
+    
+                    <script src="js/abrirpopup.js"></script>
+                </div>
 </body>
 </html>

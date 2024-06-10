@@ -1,12 +1,13 @@
 
 const firebaseConfig = {
-        apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-        authDomain: "glor-ae49f.firebaseapp.com",
-        databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-        projectId: "glor-ae49f",
-        storageBucket: "glor-ae49f.appspot.com",
-        messagingSenderId: "677710403853",
-        appId: "1:677710403853:web:f67284b068399eebb97844"
+    apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
+    authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+    databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+    projectId: "gloriamobi-5a5bf",
+    storageBucket: "gloriamobi-5a5bf.appspot.com",
+    messagingSenderId: "94268964690",
+    appId: "1:94268964690:web:d7809308d1a73b555a848b",
+    measurementId: "G-Y7M27KHFLD"
     };
 
     const app = firebase.initializeApp(firebaseConfig);
@@ -23,7 +24,7 @@ function saveChanges() {
         senha: document.getElementById('editSenha').value,
         telefone: document.getElementById('editTelefone').value
     };
-    db.ref("usuarios/" + key).update(user)
+    db.ref("users/" + key).update(user)
         .then(() => {
             console.log("Usuário atualizado com sucesso.");
             closeEditPopup();

@@ -74,7 +74,6 @@ function addItemToTable({ key, cpf, email, instituicao, nome, senha, cidade, doc
     const tbody = document.getElementById('tbody1');
     const row = document.createElement("tr");
 
-    const checkboxCell = document.createElement("td");
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkboxCell.appendChild(checkbox);

@@ -7,27 +7,29 @@ document.getElementById('form-recuperar-senha').addEventListener('submit', funct
     const email = document.getElementById('email').value;
 
     const firebaseConfig = {
-        // Sua configuração do Firebase aqui
-        apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-authDomain: "glor-ae49f.firebaseapp.com",
-databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-projectId: "glor-ae49f",
-storageBucket: "glor-ae49f.appspot.com",
-messagingSenderId: "677710403853",
-appId: "1:677710403853:web:f67284b068399eebb97844"
+        apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
+        authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+        databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+        projectId: "gloriamobi-5a5bf",
+        storageBucket: "gloriamobi-5a5bf.appspot.com",
+        messagingSenderId: "94268964690",
+        appId: "1:94268964690:web:d7809308d1a73b555a848b",
+        measurementId: "G-Y7M27KHFLD"
     };
 
+    // Inicialize o Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // Envie o email de redefinição de senha
     sendPasswordResetEmail(auth, email)
         .then(() => {
-            // Redireciona o usuário para uma página de confirmação ou exibe uma mensagem de sucesso
-            alert('Email de redefinição de senha enviado com sucesso para:', email);
-           
+            // Exibe uma mensagem de sucesso para o usuário
+            alert(`Email de redefinição de senha enviado com sucesso para: ${email}`);
         })
         .catch((error) => {
-            // Exibe uma mensagem de erro para o usuário, se necessário
+            // Exibe uma mensagem de erro para o usuário
             console.error('Erro ao enviar email de redefinição de senha:', error.message);
+            alert(`Erro ao enviar email de redefinição de senha: ${error.message}`);
         });
 });

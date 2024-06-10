@@ -4,21 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login</title>
+
     <link rel="stylesheet" href="css/styles2.css">
+
     <script type="module">
+        
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
         document.addEventListener('DOMContentLoaded', function() {
             const firebaseConfig = {
-                apiKey: "AIzaSyD26pWZ9AMYoisXfrtm7038K2SuuXuWkr8",
-authDomain: "glor-ae49f.firebaseapp.com",
-databaseURL: "https://glor-ae49f-default-rtdb.firebaseio.com",
-projectId: "glor-ae49f",
-storageBucket: "glor-ae49f.appspot.com",
-messagingSenderId: "677710403853",
-appId: "1:677710403853:web:f67284b068399eebb97844"
+                apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
+                authDomain: "gloriamobi-5a5bf.firebaseapp.com",
+                databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
+                projectId: "gloriamobi-5a5bf",
+                storageBucket: "gloriamobi-5a5bf.appspot.com",
+                messagingSenderId: "94268964690",
+                appId: "1:94268964690:web:d7809308d1a73b555a848b",
+                measurementId: "G-Y7M27KHFLD"
             };
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
