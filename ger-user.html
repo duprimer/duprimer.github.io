@@ -27,7 +27,7 @@
             </div>
             <nav class="menu">    
                 <ul class="menu">
-                    <li class="btnmenu"><a class="a2" href="ger-hor.html">HORÁRIOS</a></li>
+                    
                     <li class="btnmenu"><a class="a2" href="ger-user.html">USUÁRIOS</a></li>
                     <li class="btnmenu"><a class="a2" href="ger-rot.html">ROTAS</a></li>              
                     <li class="btnmenu"><a class="a2" href="index.html">SAIR</a></li>
@@ -57,13 +57,11 @@
                                 <th>CPF</th>
                                 <th>Email</th>
                                 <th>Rota</th>
-                                <th>Nome</th>
-                                <th>Senha</th>
-                                <th>Cidade Cadastrada</th>
+                                <th>Nome</th>                                
                                 <th>confirmação</th>
                                 <th>Documento</th>
                                 <th>Ações</th>
-                                <th>Registrar</th>
+                            
                             </tr>
                         </thead>
                         <tbody id="tbody1"></tbody>
@@ -80,9 +78,8 @@
                     <input type="text" class="editpop" id="editEmail" placeholder="Novo Email">
                     <input type="text" class="editpop" id="editroute" placeholder="Nova rota">
                     <input type="text" class="editpop" id="editNome" placeholder="Novo Nome">
-                    <input type="text" class="editpop" id="editSenha" placeholder="Nova Senha">
-                    <input type="text" class="editpop" id="editCidade" placeholder="Nova Cidade">
-                    <input class="editpop" name="file" id="casfile" type="file" placeholder="Anexar Arquivo">                   
+                    <input type="text" class="editpop" id="editconfirmation" placeholder="confirmação">
+                                
                     <button id="saveButton" onclick="saveChanges()">Salvar</button>
                     <button id="cancelButton" onclick="closeEditPopup()">Cancelar</button>
                 </div>
@@ -90,6 +87,7 @@
             
 
         <div id="error-message" style="color: red; margin-top: 10px; display: none;"></div>
+        
 
         <script>
             // Firebase configuration
@@ -186,26 +184,21 @@
     const cellCpf = row.insertCell(1);
     const cellEmail = row.insertCell(2);
     const cellroute = row.insertCell(3);
-    const cellName = row.insertCell(4);
-    const cellSenha = row.insertCell(5);
-    const cellcidade = row.insertCell(6);
-    const cellconfirmation = row.insertCell(7);
-    const cellDocumento = row.insertCell(8);
-    const cellAcoes = row.insertCell(9);
-    const cellRegistrar = row.insertCell(10);
-
+    const cellName = row.insertCell(4);    
+    const cellconfirmation = row.insertCell(5);
+    const cellDocumento = row.insertCell(6);
+    const cellAcoes = row.insertCell(7);
+ 
     // Adicionando conteúdo às células
     cellSelect.innerHTML = `<input type="checkbox" class="user-checkbox" data-key="${user.key}">`;
     cellCpf.innerText = user.cpf;
     cellEmail.innerText = user.email;
     cellroute.innerText = user.route;
-    cellName.innerText = user.name;
-    cellSenha.innerText = user.senha;
-    cellcidade.innerText = user.cidade;
+    cellName.innerText = user.name;  
     cellconfirmation.innerText = user.confirmation
     cellDocumento.innerHTML = `<button onclick="showDocument('${user.key}')">Ver Documento</button>`;
     cellAcoes.innerHTML = `<button onclick="editUser('${user.key}')">Editar</button><button onclick="deleteUser('${user.key}')">Deletar</button>`;
-    cellRegistrar.innerHTML = `<button onclick="registerUser('${user.key}')">Registrar</button>`;
+
 }
 
 
@@ -215,7 +208,7 @@ function showDocument(key) {
     db.collection("users").doc(key).get().then(doc => {
         if (doc.exists) {
             const user = doc.data();
-            const imageUrl = user.profilePicture;
+            const imageUrl = user.documentPhoto;
 
             console.log("Documento URL:", imageUrl); // Log para verificar o URL
 
@@ -300,8 +293,7 @@ function showDocument(key) {
             document.getElementById('editEmail').value = user.email;
             document.getElementById('editroute').value = user.route;
             document.getElementById('editNome').value = user.name;
-            document.getElementById('editSenha').value = user.senha;
-            document.getElementById('editCidade').value = user.cidade;
+            document.getElementById('editconfirmation').value = user.confirmation;            
             document.getElementById('editPopup').style.display = 'block';
         } else {
             console.error("Documento não encontrado");
@@ -322,8 +314,7 @@ function showDocument(key) {
         email: document.getElementById('editEmail').value,
         route: document.getElementById('editroute').value,
         name: document.getElementById('editNome').value,
-        senha: document.getElementById('editSenha').value,
-        cidade: document.getElementById('editCidade').value,
+        confirmation: document.getElementById('editconfirmation').value
     };
 
     db.collection("users").doc(key).update(updatedData).then(() => {

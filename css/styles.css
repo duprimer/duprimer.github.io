@@ -198,8 +198,16 @@ label{
 /*horarios*/
 
 
-.grid-container {
+
+
+body {
   background-image: url('https://i.im.ge/2024/04/04/WEtOqF.fundo.png');
+  background-size: cover;
+  margin: 0; /* Certifique-se de que não há margens para o corpo */
+}
+
+.grid-container {
+ 
   display: grid;
   grid-template-columns: 1fr auto   ; /* Three columns */ 
   padding: 1em;
@@ -755,10 +763,10 @@ body {
   background-color: white;
   border: #474647 solid 1px;
   border-radius: 12px;
-  height: 250px;
-  width: 1430px;
+  height: 340px;
+  width: 1300px;
   margin-top: 0.1px; 
-  margin-left: 35px;
+  margin-left: 100px;
 
   
 }
@@ -768,7 +776,7 @@ body {
   height: 35px;
   width: 350px;
   align-items: center;
- margin-left: 10px;
+ margin-left: 80px;
   margin-top: 10px;
 }
 .daconta{
@@ -794,7 +802,8 @@ body {
 
 }
 .btncad{
-  margin-left: 800px;
+  margin-left: 780px;
+  margin-top: 10px;
   color: white;
   background-color: #470572;
   border: none;
@@ -1180,6 +1189,9 @@ table {
   font-size: 14px;
   color: #e7dede;
   justify-content: center;
+  position: absolute;
+  top: 190px;
+  left: 500px;
   align-items: center;
   text-align: center;
   background-color: #7d1ebd;

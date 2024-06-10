@@ -27,7 +27,7 @@
             </div>
             <nav class="menu">    
                 <ul class="menu">
-                    <li class="btnmenu"><a class="a2" href="ger-hor.html">HORÁRIOS</a></li>
+                    
                     <li class="btnmenu"><a class="a2" href="ger-user.html">USUÁRIOS</a></li>
                     <li class="btnmenu"><a class="a2" href="ger-rot.html">ROTAS</a></li>              
                     <li class="btnmenu"><a class="a2" href="index.html">SAIR</a></li>
@@ -39,21 +39,16 @@
             <div class="boxtab">
                 <div class="cabetab">
                     <p class="pcabe">
-                        <button id="selectAllButton" onclick="toggleSelectAll()">Selecionar Todos</button>
+                        
                         <button id="gePdf" onclick="generatePDF()">Gerar PDF</button>
-                        <input type="text" name="pesquisa_por_nome" id="pesNome" placeholder="Pesquisa por nome">
-                        <button id="btnPesNome"><i class="fas fa-search"></i> Pesquisa</button>
+                       
                     </p>
-                    <p class="pcabe">
-                        <input type="text" name="pesquisa_por_cpf" id="pesCpf" placeholder="Pesquisa por CPF">
-                        <button id="btnPesCpf"><i class="fas fa-search"></i> Pesquisa</button>
-                    </p>
+                    
                 </div>
                 <div class="scrollable-table-container">
                     <table id="tab12" class="table table-dark">
                         <thead>
-                            <tr>
-                                <th>Seleção</th>
+                            <tr>                                
                                 <th>CIDADE</th>
                                 <th>HORÁRIO</th>
                                 <th>SAIDA</th>
@@ -102,50 +97,7 @@
             const app = firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
-            const storage = firebase.storage();
-
-            // Event listeners for search buttons
-            document.getElementById('btnPesNome').addEventListener('click', () => {
-                const pesquisaNome = document.getElementById('pesNome').value.trim();
-                if (pesquisaNome !== '') {
-                    searchByField('nome', pesquisaNome);
-                }
-            });
-
-            document.getElementById('btnPesCpf').addEventListener('click', () => {
-                const pesquisaCpf = document.getElementById('pesCpf').value.trim();
-                if (pesquisaCpf !== '') {
-                    searchByField('cpf', pesquisaCpf);
-                }
-            });
-
-            document.getElementById('pesNome').addEventListener('input', () => {
-                if (document.getElementById('pesNome').value.trim() === '') {
-                    getAllDataOnce();
-                }
-            });
-
-            document.getElementById('pesCpf').addEventListener('input', () => {
-                if (document.getElementById('pesCpf').value.trim() === '') {
-                    getAllDataOnce();
-                }
-            });
-
-            function searchByField(field, value) {
-                db.collection("route").where(field, "==", value).get()
-                    .then(querySnapshot => {
-                        const users = [];
-                        querySnapshot.forEach(doc => {
-                            const user = doc.data();
-                            user.key = doc.id;
-                            users.push(user);
-                        });
-                        addAllItemsToTable(users);
-                    })
-                    .catch(error => {
-                        console.error("Erro ao obter os dados: ", error);
-                    });
-            }
+            
 
             function getAllDataOnce() {
                 db.collection("route").get()
@@ -177,14 +129,14 @@
                 const row = tbody.insertRow();
 
                 // Criação das células e adição dos dados
-                const cellSelect = row.insertCell(0);
-                const cellCity = row.insertCell(1);
-                const cellDepartureTime = row.insertCell(2);
-                const cellExitPoint = row.insertCell(3);
-                const cellRouteUni = row.insertCell(4);                
+                
+                const cellCity = row.insertCell(0);
+                const cellDepartureTime = row.insertCell(1);
+                const cellExitPoint = row.insertCell(2);
+                const cellRouteUni = row.insertCell(3);                
                 
                 // Adicionando conteúdo às células
-                cellSelect.innerHTML = `<input type="checkbox" class="user-checkbox" data-key="${user.key}">`;
+                
                 cellCity.innerText = user.City;
                 cellDepartureTime.innerText = user.DepartureTime;
                 cellExitPoint.innerText = user.ExitPoint;

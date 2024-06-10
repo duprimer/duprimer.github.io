@@ -22,10 +22,12 @@
         <div class="user-photo-container">
             <img src="https://img.freepik.com/psd-gratuitas/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671142.jpg?size=338&ext=jpg&ga=GA1.1.2082370165.1715817600&semt=sph" alt="Foto de usuário" class="user-photo">
         </div>
+        
+        
 
         <nav class="menu">    
             <ul>
-                <li class="btnmenu"><a class="a2" href="ger-hor.html">HORÁRIOS</a></li>
+                
                 <li class="btnmenu"><a class="a2" href="ger-user.html">USUÁRIOS</a></li>
                 <li class="btnmenu"><a class="a2" href="ger-rot.html">ROTAS</a></li>              
                 <li class="btnmenu"><a class="a2" href="index.html">SAIR</a></li>
@@ -37,19 +39,34 @@
         <h1 class="arger">Formulário de Cadastro de Rota</h1>
         <div class="dalog">
             <div class="cabec">Dados de Login</div>
-            <input class="boxcads" name="City" id="casCity" type="text" placeholder="cidade">
-            <input class="boxcads" name="DepartureTime" id="casDepartureTime" type="number" placeholder="Horário de saída">
-            <input class="boxcads" name="ExitPoint" id="casExitPoint" type="text" placeholder="Ponto de saída">
-            <input class="boxcads" name="RouteUni" id="casRouteUni" type="text" placeholder="Destinos">
-            
-            <div class="divbtncad">
-                <button class="btncad" id="InstBtn">Adicionar</button>
-            </div>
+                        
+            <form id="routeForm">    
+                <select class="boxcads" id="casCity" name="casCity">
+                    <option value="Limoeiro">Limoeiro</option>
+                    <option value="Gloria">Gloria</option>
+                    <option value="Nazaré">Nazaré</option>
+                    <option value="Recife">Recife</option>
+                    <option value="Vitória">Vitória</option>
+                </select>   
+                <input class="boxcads" name="DepartureTime" id="casDepartureTime" type="time" placeholder="Horário de saída">
+                <input class="boxcads" name="ExitPoint" id="casExitPoint" type="text" placeholder="Ponto de saída">
+                <select class="boxcads" id="casRouteUni" name="casRouteUni">
+                    <option value="Universitários Limoeiro">Universitários Limoeiro</option>
+                    <option value="Universitários Nazaré">Universitários Nazaré</option>
+                    <option value="Universitários Recife">Universitários Recife</option>
+                    <option value="Universitários Vitória">Universitários Vitória</option>
+                </select>   
+                <input class="boxcads" name="IMG1" id="IMG1" type="file" placeholder="Imagens">
+                <input class="boxcads" name="IMG2" id="IMG2" type="file" placeholder="Imagens">
+                <input class="boxcads" name="IMG3" id="IMG3" type="file" placeholder="Imagens">
+                <input class="boxcads" name="IMG4" id="IMG4" type="file" placeholder="Imagens">
+                <div class="divbtncad">
+                    <button type="button" class="btncad" id="InstBtn">Adicionar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-
-
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
@@ -58,7 +75,6 @@
     const firebaseConfig = {
         apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
         authDomain: "gloriamobi-5a5bf.firebaseapp.com",
-        databaseURL: "https://gloriamobi-5a5bf-default-rtdb.firebaseio.com",
         projectId: "gloriamobi-5a5bf",
         storageBucket: "gloriamobi-5a5bf.appspot.com",
         messagingSenderId: "94268964690",
@@ -73,6 +89,10 @@
     const DepartureTimeInput = document.getElementById("casDepartureTime");
     const ExitPointInput = document.getElementById("casExitPoint");
     const RouteUniInput = document.getElementById("casRouteUni");
+    const IMG1Input = document.getElementById("IMG1");
+    const IMG2Input = document.getElementById("IMG2");
+    const IMG3Input = document.getElementById("IMG3");
+    const IMG4Input = document.getElementById("IMG4");
 
     const addBtn = document.getElementById("InstBtn");
 
@@ -81,15 +101,48 @@
         DepartureTimeInput.value = '';
         ExitPointInput.value = '';
         RouteUniInput.value = '';
+        IMG1Input.value = '';
+        IMG2Input.value = '';
+        IMG3Input.value = '';
+        IMG4Input.value = '';
     }
 
+    function convertToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    }
+
+        function generateCustomCode(length = 20) {
+    const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let code = "";
+    for (let i = 0; i < length; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return code;
+    }
     async function AdicionarDados() {
         try {
-            await setDoc(doc(db, "route", CityInput.value), {
+            const img1Base64 = IMG1Input.files[0] ? await convertToBase64(IMG1Input.files[0]) : '';
+            const img2Base64 = IMG2Input.files[0] ? await convertToBase64(IMG2Input.files[0]) : '';
+            const img3Base64 = IMG3Input.files[0] ? await convertToBase64(IMG3Input.files[0]) : '';
+            const img4Base64 = IMG4Input.files[0] ? await convertToBase64(IMG4Input.files[0]) : '';
+            const customCode = generateCustomCode();
+            
+
+            await setDoc(doc(db, "route", customCode), {
                 City: CityInput.value,
                 DepartureTime: DepartureTimeInput.value,
                 ExitPoint: ExitPointInput.value,
                 RouteUni: RouteUniInput.value,
+                IMG1: img1Base64,
+                IMG2: img2Base64,
+                IMG3: img3Base64,
+                IMG4: img4Base64,
             });
 
             alert("Dados armazenados com sucesso");
@@ -99,7 +152,10 @@
         }
     }
 
-    addBtn.addEventListener('click', AdicionarDados);
+    addBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        AdicionarDados();
+    });
 </script>
 </body>
 </html>
