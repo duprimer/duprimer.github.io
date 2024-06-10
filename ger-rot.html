@@ -57,7 +57,9 @@
                                 <th>CIDADE</th>
                                 <th>HORÁRIO</th>
                                 <th>SAIDA</th>
-                                <th>DESTINO</th>                      
+                                <th>DESTINO</th>    
+                                <th>Ações</th>
+                                              
                             </tr>
                         </thead>
                         <tbody id="tbody1"></tbody>
@@ -138,7 +140,8 @@
                 const cellCity = row.insertCell(0);
                 const cellDepartureTime = row.insertCell(1);
                 const cellExitPoint = row.insertCell(2);
-                const cellRouteUni = row.insertCell(3);                
+                const cellRouteUni = row.insertCell(3); 
+                const cellAcoes = row.insertCell(4);               
                 
                 // Adicionando conteúdo às células
                 
@@ -146,6 +149,8 @@
                 cellDepartureTime.innerText = user.DepartureTime;
                 cellExitPoint.innerText = user.ExitPoint;
                 cellRouteUni.innerText = user.RouteUni;
+                cellAcoes.innerHTML = `<button onclick="deleteUser('${user.key}')">Deletar</button>`; // botões de editar e excluir
+
                 
             }
             
@@ -164,22 +169,7 @@
                 doc.save('route-relatorio.pdf');
             }
 
-            function editUser(key) {
-                // Abre o popup de edição e preenche os campos com os dados do usuário
-                db.collection("users").doc(key).get().then(doc => {
-                    if (doc.exists) {
-                        const user = doc.data();
-                        document.getElementById('editKey').value = key;
-                        document.getElementById('editCpf').value = user.cpf;
-                        document.getElementById('editEmail').value = user.email;
-                        document.getElementById('editInstituicao').value = user.instituicao;
-                        document.getElementById('editName').value = user.name;
-                        document.getElementById('editSenha').value = user.senha;
-                        document.getElementById('editroute').value = user.route;
-                        document.getElementById('editPopup').style.display = 'block';
-                    }
-                });
-            }
+            
 
             function closeEditPopup() {
                 document.getElementById('editPopup').style.display = 'none';
@@ -195,7 +185,7 @@
                     
                 };
 
-                db.collection("users").doc(key).update(updatedData).then(() => {
+                db.collection("route").doc(key).update(updatedData).then(() => {
                     closeEditPopup();
                     getAllDataOnce();
                 }).catch(error => {
@@ -204,7 +194,7 @@
             }
 
             function deleteUser(key) {
-                db.collection("users").doc(key).delete().then(() => {
+                db.collection("route").doc(key).delete().then(() => {
                     getAllDataOnce();
                 }).catch(error => {
                     console.error("Erro ao deletar usuário: ", error);
