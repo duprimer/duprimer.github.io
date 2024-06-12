@@ -12,9 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-    <!-- Include jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <!-- Include jsPDF-AutoTable -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
@@ -67,7 +65,6 @@
                 </div>
                 <button class="btnfun"><i class="fa-solid fa-plus"></i> <a class="a2" href="cadastrarota.html">Adicionar</a></button>
             </div>
-            <!-- Popup para edição -->
             <div id="editPopup" class="popup">
                 <div class="popup-content">
                     <img class="logohpop" src="https://i.im.ge/2024/04/04/WEcTRc.logo-sem-fundo.png" alt="Logo Popup">
@@ -84,11 +81,9 @@
                 </div>
             </div>
         </div>
-
-        <div id="error-message" style="color: red; margin-top: 10px; display: none;"></div>
-
-        <script>
-            // Firebase configuration
+       <div id="error-message" style="color: red; margin-top: 10px; display: none;"></div>
+       <script>
+         
             const firebaseConfig = {
                 apiKey: "AIzaSyChwMJS0p4pwi9fL-edQEkOhiSupHURjL4",
                 authDomain: "gloriamobi-5a5bf.firebaseapp.com",
@@ -100,7 +95,6 @@
                 measurementId: "G-Y7M27KHFLD"
             };
 
-            // Initialize Firebase
             const app = firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
@@ -124,32 +118,25 @@
 
             function addAllItemsToTable(users) {
                 const tbody = document.getElementById('tbody1');
-                tbody.innerHTML = ''; // Clear the table first
-                tbody.innerHTML = ''; // Limpa a tabela antes de adicionar os novos dados
+                tbody.innerHTML = ''; 
+                tbody.innerHTML = ''; 
                 users.forEach(user => {
                     addItemToTable(user);
                 });
             }
-
             function addItemToTable(user) {
                 const tbody = document.getElementById('tbody1');
                 const row = tbody.insertRow();
-
-                // Criação das células e adição dos dados
-                
                 const cellCity = row.insertCell(0);
                 const cellDepartureTime = row.insertCell(1);
                 const cellExitPoint = row.insertCell(2);
                 const cellRouteUni = row.insertCell(3); 
                 const cellAcoes = row.insertCell(4);               
-                
-                // Adicionando conteúdo às células
-                
                 cellCity.innerText = user.City;
                 cellDepartureTime.innerText = user.DepartureTime;
                 cellExitPoint.innerText = user.ExitPoint;
                 cellRouteUni.innerText = user.RouteUni;
-                cellAcoes.innerHTML = `<button onclick="deleteUser('${user.key}')">Deletar</button>`; // botões de editar e excluir
+                cellAcoes.innerHTML = `<button onclick="deleteUser('${user.key}')">Deletar</button>`; 
 
                 
             }
@@ -165,11 +152,7 @@
             function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
-    // Define o cabeçalho da tabela com as colunas desejadas
     const headers = [['CIDADE', 'HORÁRIO', 'SAIDA', 'DESTINO']];
-    
-    // Obtém os dados da tabela
     const data = [];
     document.querySelectorAll('#tab12 tbody tr').forEach(row => {
         const rowData = [];
@@ -179,13 +162,13 @@
         data.push(rowData);
     });
     
-    // Gera o PDF com o cabeçalho e os dados
+   
     doc.autoTable({
         head: headers,
         body: data,
     });
     
-    // Salva o PDF
+   
     doc.save('route-relatorio.pdf');
 }
             
@@ -221,29 +204,22 @@
             }
 
             function registerUser(key) {
-                // Implemente a lógica para registrar o usuário aqui
-                console.log("Registrar usuário com chave: ", key);
+              console.log("Registrar usuário com chave: ", key);
             }
 
-                // Verifique se o usuário está autenticado
-firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-        // O usuário está autenticado, você pode acessar suas informações
-        const userName = user.displayName; // Nome do usuário
-        const userEmail = user.email; // Email do usuário
-
-        // Seletor para o elemento onde você quer exibir o nome e email do usuário
-        const userInfoElement = document.querySelector('.cinfo');
-
-        // Atualizando o HTML do elemento com as informações do usuário
-        userInfoElement.innerHTML = `
-           
-            <p class="pinfo">${userEmail}</p>
-        `;
-    } else {
-        // O usuário não está autenticado, faça o que for necessário
-    }
-});
+            firebase.auth().onAuthStateChanged(user => {
+                if (user) {
+                    const userName = user.displayName; 
+                    const userEmail = user.email; 
+                    const userInfoElement = document.querySelector('.cinfo');
+                    userInfoElement.innerHTML = `
+                    
+                        <p class="pinfo">${userEmail}</p>
+                    `;
+                } else {
+                    
+                }
+            });
             window.onload = function() {
                 getAllDataOnce();
             };
